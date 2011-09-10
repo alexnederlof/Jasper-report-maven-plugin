@@ -171,10 +171,7 @@ public class JasperReporter extends AbstractMojo {
          List<Future<String>> output = Executors.newFixedThreadPool(numberOfThreads).invokeAll(tasks);
          long time = (System.currentTimeMillis() - t1) / 1000;
          getLog().info("Generated " + output.size() + " reports in " + time + " seconds");
-         for (Future<String> future : output) {
-            future.get();            
-         }
-
+         checkForExceptions(output);
       } catch (InterruptedException e) {
          log.error("Failed to compile Japser reports: Interrupted!", e);
          throw new MojoExecutionException("Error while compiling Jasper reports", e);
@@ -184,6 +181,13 @@ public class JasperReporter extends AbstractMojo {
          } else {
             throw new MojoExecutionException("Error while compiling Jasper reports", e);
          }
+      }
+   }
+
+   private void checkForExceptions(List<Future<String>> output) throws InterruptedException,
+         ExecutionException {
+      for (Future<String> future : output) {
+         future.get();            
       }
    }
 
