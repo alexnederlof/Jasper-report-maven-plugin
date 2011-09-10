@@ -1,0 +1,147 @@
+package de.enovationbtc.jasperreport;
+
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
+import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.testing.AbstractMojoTestCase;
+import org.codehaus.plexus.util.FileUtils;
+
+/**
+ * Test the report generation.
+ */
+public class JasperReportTest extends AbstractMojoTestCase {
+
+   private static final String TARGET_EXAMPLE_FOLDER = "target/test-classes/unit/exampleFolders";
+   private File examplesFolder;
+   private File sourceFolder;
+   private File destinationFolder;
+
+   @Override
+   protected void setUp() throws Exception {
+      super.setUp();
+      examplesFolder = new File(getBasedir(), TARGET_EXAMPLE_FOLDER);
+      File sourceFolder = new File(getBasedir(), "src/test/resources/exampleFolders");
+      assertTrue("The folder to copy the examples from doesn't exist", sourceFolder.exists());
+      FileUtils.copyDirectoryStructure(sourceFolder, examplesFolder);
+
+   }
+
+   @Override
+   protected void tearDown() throws Exception {
+      super.tearDown();
+      // System.out.println("Cleaning up examples folder");
+      // FileUtils.deleteDirectory(examplesFolder);
+   }
+
+   /**
+    * Test the normal generation of Jasper reports. The files are retrieved from
+    * the official jasper examples folder. No errors or warnings should occur.
+    * 
+    * @throws Exception When an unexpexted error occures.
+    */
+   public void testValidReportGeneration() throws Exception {
+      String pluginPom = getBasedir() + "/src/test/resources/testSampleReportsPom.xml";
+
+      setupSourceAndDestinationFolder("/sampleReports", "/sampleReports_out");
+
+      getAndExecuteMojo(pluginPom);
+
+      assertEquals("Files from sourcefolder do not correspond to files in the destinationFolder",
+            sourceFolder.listFiles().length, destinationFolder.listFiles().length);
+      assertAllFilesAreCompiled(sourceFolder, destinationFolder);
+
+   }
+
+   public void getAndExecuteMojo(String pluginPom) throws Exception, MojoExecutionException {
+      JasperReporter mojo = (JasperReporter) lookupMojo("jasper", pluginPom);
+      assertNotNull(mojo);
+      mojo.execute();
+   }
+
+   public void setupSourceAndDestinationFolder(String sourceFolderName, String destinationFolderName) {
+      sourceFolder = new File(getBasedir(), TARGET_EXAMPLE_FOLDER + sourceFolderName);
+      destinationFolder = new File(getBasedir(), TARGET_EXAMPLE_FOLDER + destinationFolderName);
+      assertTrue("Source folder doesn't exist: " + sourceFolder.getAbsolutePath(), sourceFolder.exists());
+      assertFalse("Destination folder shouldn't exist", destinationFolder.exists());
+   }
+
+   private void assertAllFilesAreCompiled(File sourceFolder, File destinationFolder) {
+      assertTrue("Source folder is not a directory", sourceFolder.isDirectory());
+      assertTrue("Destination is not a directory", destinationFolder.isDirectory());
+      Set<String> filenames = new HashSet<String>();
+      for (File file : sourceFolder.listFiles()) {
+         if (file.isFile()) {
+            filenames.add(getNameWithoutSuffix(file, ".jrxml"));
+         }
+      }
+      for (File file : destinationFolder.listFiles()) {
+         if (file.isFile()) {
+            filenames.remove(getNameWithoutSuffix(file, ".jasper"));
+         }
+      }
+      assertTrue("Files from sourcefolder do not correspond to files in the destinationFolder", filenames.isEmpty());
+   }
+
+   private String getNameWithoutSuffix(File file, String suffix) {
+      return file.getName().substring(0, file.getName().indexOf(suffix));
+   }
+
+   /**
+    * Test that an invalid Jasper file should stop the build completely by
+    * throwing an {@link MojoExecutionException}.
+    * 
+    * @throws Exception When an unexpected error occurs.
+    */
+   public void testInvalidFilesStopBuild() throws Exception {
+      setupSourceAndDestinationFolder("/brokenReports", "/brokenReports_out");
+      try {
+         getAndExecuteMojo(getBasedir() + "/src/test/resources/testBrokenReportsPom.xml");
+         fail("An exception should have been thrown");
+      } catch (MojoExecutionException e) {
+         assertEquals(JasperReporter.ERROR_JRE_COMPILE_ERROR, e.getMessage());
+      }
+   }
+
+   /**
+    * Test that all files with an invalid suffix are not compiled.
+    * 
+    * @throws Exception When an unexpected error occurs.
+    */
+   public void testWrongSuffixDoesntCompile() throws Exception {
+      setupSourceAndDestinationFolder("/wrongExtensions", "/wrongExtensions_out");
+      getAndExecuteMojo(getBasedir() + "/src/test/resources/testWrongExtensionsPom.xml");
+      assertTrue("Output folder should be empty", destinationFolder.list().length == 0);
+   }
+
+   /**
+    * Test that an empty folder doesn't create errors but just does nothing.
+    * @throws Exception When an unexpected error occurs.
+    */
+   public void testEmptyDoesNothing() throws Exception {
+      setupSourceAndDestinationFolder("/emptyFolder", "/emptyFolder_out");
+      getAndExecuteMojo(getBasedir() + "/src/test/resources/testEmptyFolderPom.xml");
+      assertTrue("Output folder should be empty", destinationFolder.list().length == 0);
+   }
+
+   // TODO test folder structure remains.
+
+}

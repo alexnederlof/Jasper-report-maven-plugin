@@ -9,8 +9,8 @@
 	<description>A Jasper compiler plugin</description>
 
 	<properties>
-		<maven.compiler.source>1.5</maven.compiler.source>
-		<maven.compiler.target>1.5</maven.compiler.target>
+		<maven.compiler.source>1.6</maven.compiler.source>
+		<maven.compiler.target>1.6</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
@@ -24,6 +24,13 @@
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.shared</groupId>
+			<artifactId>maven-plugin-testing-harness</artifactId>
+			<version>1.1</version>
+			<scope>test</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
@@ -70,7 +77,7 @@
 				<artifactId>maven-site-plugin</artifactId>
 				<version>3.0</version>
 				<configuration>
-					
+
 					<reportPlugins>
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>

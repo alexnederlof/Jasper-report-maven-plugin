@@ -1,11 +1,12 @@
 package de.enovationbtc.jasperreport;
 
 /*
- * Copyright 2001-2005 The Apache Software Foundation.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  * 
  * http://www.apache.org/licenses/LICENSE-2.0
  * 
@@ -32,16 +33,18 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 
-/** 
- * @goal compile
+/**
+ * @goal jasper
  * @phase process-resources
  */
 public class JasperReporter extends AbstractMojo {
 
+   static final String ERROR_JRE_COMPILE_ERROR = "Some Jasper reports could not be compiled. See log above for details.";
+
    /**
     * This is where the .jasper files are written.
     * 
-    * @parameter expression="${project.build.outputDirectory}"
+    * @parameter expression="${project.build.outputDirectory}/jasper"
     */
    private File outputDirectory;
 
@@ -74,33 +77,34 @@ public class JasperReporter extends AbstractMojo {
     * @parameter default-value="true"
     */
    private boolean xmlValidation;
-   
+
    /**
-    * The number of threads the reporting will use. Default is 8 which is
-    * good for a lot of reports. If you only have a few, it might be faster
-    * to set it to 2.
-    * @parameter default-value=8
+    * The number of threads the reporting will use. Default is 4 which is good
+    * for a lot of reports on a hard drive (in stead of SSD). If you only have a few, 
+    * or if you have SSD, it might be faster to set it to 2.
+    * 
+    * @parameter default-value=4
     */
    private int numberOfThreads;
 
    private Log log;
 
-   public void execute()
-         throws MojoExecutionException {
+   @Override
+   public void execute() throws MojoExecutionException {
       log = getLog();
 
       if (outputDirectory.exists() && outputDirectory.listFiles().length > 0) {
-         log.info("It seems the Jasper reports are already compiled. If you want to re-compile, run maven " +
-         		"with the 'clean' goal.");
+         log.info("It seems the Jasper reports are already compiled. If you want to re-compile, run maven "
+               + "with the 'clean' goal.");
          return;
       }
-      
+
       logConfiguration(log);
-      
+
       checkOutDirWritable(outputDirectory);
 
       List<File> files = getFiles(sourceDirectory);
-     
+
       if (files.isEmpty()) {
          log.info("No files found to compile.");
          return;
@@ -109,7 +113,7 @@ public class JasperReporter extends AbstractMojo {
       log.info("Found " + files.size() + " files");
 
       JRProperties.setProperty(JRProperties.COMPILER_XML_VALIDATION, xmlValidation);
-      
+
       List<CompileTask> tasks = generateTasks(files);
       executeTasks(tasks);
    }
@@ -125,8 +129,9 @@ public class JasperReporter extends AbstractMojo {
    }
 
    /**
-    * Check if the output directory exist and is writable. If not, try to create an output dir
-    * and see if that is writable.
+    * Check if the output directory exist and is writable. If not, try to create
+    * an output dir and see if that is writable.
+    * 
     * @param outputDirectory
     * @throws MojoExecutionException
     */
@@ -135,11 +140,10 @@ public class JasperReporter extends AbstractMojo {
          if (outputDirectory.canWrite()) {
             return;
          } else {
-            throw new MojoExecutionException("The output dir was not writable. " 
-            		+ "Try running maven with the 'clean' goal.");
+            throw new MojoExecutionException("The output dir was not writable. "
+                  + "Try running maven with the 'clean' goal.");
          }
-      }
-      else if (!outputDirectory.mkdirs()) {
+      } else if (!outputDirectory.mkdirs()) {
          throw new MojoExecutionException(this, "Output folder could not be created",
                "Outputfolder " + outputDirectory.getAbsolutePath() + " is not a folder");
       } else if (!outputDirectory.canWrite()) {
@@ -177,19 +181,17 @@ public class JasperReporter extends AbstractMojo {
          throw new MojoExecutionException("Error while compiling Jasper reports", e);
       } catch (ExecutionException e) {
          if (e.getCause() instanceof JRException) {
-            throw new MojoExecutionException("Some Jasper reports could not be compiled. See log above for details.");
+            throw new MojoExecutionException(ERROR_JRE_COMPILE_ERROR, e);
          } else {
             throw new MojoExecutionException("Error while compiling Jasper reports", e);
          }
       }
    }
 
-   private void checkForExceptions(List<Future<String>> output) throws InterruptedException,
-         ExecutionException {
+   private void checkForExceptions(List<Future<String>> output) throws InterruptedException, ExecutionException {
       for (Future<String> future : output) {
-         future.get();            
+         future.get();         
       }
    }
 
-   
 }
