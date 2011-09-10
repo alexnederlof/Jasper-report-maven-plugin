@@ -134,12 +134,25 @@ public class JasperReportTest extends AbstractMojoTestCase {
 
    /**
     * Test that an empty folder doesn't create errors but just does nothing.
+    * 
     * @throws Exception When an unexpected error occurs.
     */
    public void testEmptyDoesNothing() throws Exception {
+      createTheEmptyFolderIfItDoesntExist();
       setupSourceAndDestinationFolder("/emptyFolder", "/emptyFolder_out");
       getAndExecuteMojo(getBasedir() + "/src/test/resources/testEmptyFolderPom.xml");
       assertTrue("Output folder should be empty", destinationFolder.list().length == 0);
+   }
+
+   /**
+    * The empty folder we test on is not transported by Git. We therefor have to
+    * create it manually to do the test.
+    */
+   private void createTheEmptyFolderIfItDoesntExist() {
+      sourceFolder = new File(getBasedir(), TARGET_EXAMPLE_FOLDER + "/emptyFolder");
+      if (!sourceFolder.exists()) {
+         sourceFolder.mkdir();
+      }
    }
 
    // TODO test folder structure remains.
