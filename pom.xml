@@ -15,6 +15,12 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 
+	<scm>
+		<connection>scm:git:git@github.com:alexnederlof/Jasper-report-maven-plugin.git</connection>
+		<url>scm:git:git@github.com:alexnederlof/Jasper-report-maven-plugin.git</url>
+		<developerConnection>scm:git:git@github.com:alexnederlof/Jasper-report-maven-plugin.git</developerConnection>
+	</scm>
+
 
 
 	<dependencies>
@@ -71,6 +77,12 @@
 					<encoding>UTF-8</encoding>
 					<useFile>false</useFile>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.2.1</version>
 			</plugin>
 
 			<plugin>
