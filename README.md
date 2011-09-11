@@ -14,6 +14,7 @@ This plugin is not (yet) in the central maven repo. To use it you can clone this
 	mvn clean install
 
 You can then use the plugin using by adding this to the pom: (replace the version number!);
+
 	<build>
 		<plugins>
 			<plugin>
@@ -23,10 +24,10 @@ You can then use the plugin using by adding this to the pom: (replace the versio
 				<executions>
 					<execution>
 						<phase>process-sources</phase>
-						<goals>
-							<goal>jasper</goal>
-						</goals>
-					</execution>
+		   				<goals>
+		      				<goal>jasper</goal>
+		   				</goals>
+		   			</execution>
 				</executions>
 				<configuration>
 					<outputDirectory>${project.build.directory}/jasper</outputDirectory>					
