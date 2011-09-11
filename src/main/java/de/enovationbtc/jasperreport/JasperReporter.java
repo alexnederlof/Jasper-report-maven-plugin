@@ -18,9 +18,7 @@ package de.enovationbtc.jasperreport;
  */
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -103,18 +101,14 @@ public class JasperReporter extends AbstractMojo {
 
       checkOutDirWritable(outputDirectory);
 
-      List<File> files = getFiles(sourceDirectory);
-
-      if (files.isEmpty()) {
-         log.info("No files found to compile.");
-         return;
-      }
-
-      log.info("Found " + files.size() + " files");
-
       JRProperties.setProperty(JRProperties.COMPILER_XML_VALIDATION, xmlValidation);
 
-      List<CompileTask> tasks = generateTasks(files);
+      List<CompileTask> tasks = generateTasks(sourceDirectory, outputDirectory);
+      
+      if (tasks.isEmpty()) {
+         log.info("Nothing to compile");
+         return;
+      }      
       executeTasks(tasks);
    }
 
@@ -154,19 +148,29 @@ public class JasperReporter extends AbstractMojo {
       }
    }
 
-   private List<File> getFiles(File directory) {
-      if (directory == null || !directory.exists() || !directory.isDirectory()) {
-         return Collections.emptyList();
+   private List<CompileTask> generateTasks(File sourceDirectory, File destinationDirectory) {
+      if (!sourceDirectory.isDirectory()) {
+         throw new IllegalArgumentException(sourceDirectory.getName() + " is not a directory");
       }
-      return Arrays.asList(directory.listFiles());
-   }
-
-   private List<CompileTask> generateTasks(List<File> files) {
-      List<CompileTask> tasks = new ArrayList<CompileTask>(files.size());
-      for (File file : files) {
-         tasks.add(new CompileTask(file, outputDirectory, sourceFileExt, outputFileExt, log));
+      List<CompileTask> tasks = new LinkedList<CompileTask>(); 
+      for (File f : sourceDirectory.listFiles()) {
+         if (f.isDirectory()) {
+            tasks.addAll(generateTasks(f, createNewDest(f, destinationDirectory)));
+         } else { // It is a directory
+            if (f.getName().endsWith(sourceFileExt)) {
+               tasks.add(new CompileTask(f, destinationDirectory, sourceFileExt, outputFileExt, log));
+            } else {
+               log.info("Skipped " + f.getName() + " because it doesnt have the extension " + sourceFileExt);
+            }
+         }            
       }
       return tasks;
+   }
+
+   private File createNewDest(File origin, File destinationDirectory) {
+      File newDest = new File(destinationDirectory, origin.getName());
+      newDest.mkdir();
+      return newDest;
    }
 
    private void executeTasks(List<CompileTask> tasks) throws MojoExecutionException {

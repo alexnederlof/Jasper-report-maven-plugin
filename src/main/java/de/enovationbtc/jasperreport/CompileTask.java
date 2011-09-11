@@ -62,6 +62,7 @@ public class CompileTask implements Callable<String> {
     * @throws Exception when anything goes wrong while compiling.
     */
    public String call() throws Exception {
+      File out = null;
       try {
          if (!source.getAbsolutePath().endsWith(sourceExtension)) {
             String txt = "Skipped " + source.getName() + " because it doesn't have the extention: " + sourceExtension;
@@ -69,13 +70,16 @@ public class CompileTask implements Callable<String> {
             return txt;
          } else {
             String newFilename = getNewFilename();
-            File out = new File(destFolder, newFilename);
+            out = new File(destFolder, newFilename);
             JasperCompileManager.compileReportToStream(new FileInputStream(source), new FileOutputStream(out));
             log.info("Compiling " + newFilename);
             return "compiled " + newFilename;
          }
       } catch (JRException e) {
          log.error("Could not compile " + source.getName(), e);
+         if (out != null && out.exists()) {
+            out.delete();
+         }
          throw new JRException("Could not compile " + source.getName(), e);        
       }
    }

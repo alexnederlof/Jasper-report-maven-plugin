@@ -27,8 +27,8 @@
 					<numberOfThreads>4</numberOfThreads>
 					<outputFileExt>.jasper</outputFileExt>
 					<sourceFileExt>.jrxml</sourceFileExt>
-					<sourceDirectory>target/test-classes/exampleFolders/emptyFolder</sourceDirectory>
-					<outputDirectory>target/unitTestReports/emptyFolder_out</outputDirectory>										
+					<sourceDirectory>target/test-classes/exampleFolders/folderStructure</sourceDirectory>
+					<outputDirectory>target/unitTestReports/folderStructure_out</outputDirectory>										
 				</configuration>
 			</plugin>
 		</plugins>

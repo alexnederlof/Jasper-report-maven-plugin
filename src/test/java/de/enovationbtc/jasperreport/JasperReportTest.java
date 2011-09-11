@@ -30,26 +30,29 @@ import org.codehaus.plexus.util.FileUtils;
  */
 public class JasperReportTest extends AbstractMojoTestCase {
 
-   private static final String TARGET_EXAMPLE_FOLDER = "target/test-classes/unit/exampleFolders";
+   private static final String TARGET_EXAMPLE_FOLDER = "target/test-classes/exampleFolders";
+   private static final String TARGET_EXAMPLE_OUT_FOLDER = "target/unitTestReports";
    private File examplesFolder;
    private File sourceFolder;
    private File destinationFolder;
+   private File exampleOutputDir;
 
    @Override
    protected void setUp() throws Exception {
       super.setUp();
       examplesFolder = new File(getBasedir(), TARGET_EXAMPLE_FOLDER);
-      File sourceFolder = new File(getBasedir(), "src/test/resources/exampleFolders");
-      assertTrue("The folder to copy the examples from doesn't exist", sourceFolder.exists());
-      FileUtils.copyDirectoryStructure(sourceFolder, examplesFolder);
-
+      exampleOutputDir = new File(getBasedir(), TARGET_EXAMPLE_OUT_FOLDER);
+      assertTrue("The folder to copy the examples from doesn't exist", examplesFolder.exists());      
    }
 
    @Override
    protected void tearDown() throws Exception {
-      super.tearDown();
-      // System.out.println("Cleaning up examples folder");
-      // FileUtils.deleteDirectory(examplesFolder);
+      super.tearDown();      
+      for (File f : examplesFolder.listFiles()) {
+         if (f.isDirectory() && f.getName().endsWith("_out")) {
+//            FileUtils.deleteDirectory(f);
+         }
+      }
    }
 
    /**
@@ -79,7 +82,10 @@ public class JasperReportTest extends AbstractMojoTestCase {
 
    public void setupSourceAndDestinationFolder(String sourceFolderName, String destinationFolderName) {
       sourceFolder = new File(getBasedir(), TARGET_EXAMPLE_FOLDER + sourceFolderName);
-      destinationFolder = new File(getBasedir(), TARGET_EXAMPLE_FOLDER + destinationFolderName);
+      destinationFolder = new File(getBasedir(), TARGET_EXAMPLE_OUT_FOLDER + destinationFolderName);
+      if (destinationFolder.exists()) {
+         destinationFolder.delete();
+      }
       assertTrue("Source folder doesn't exist: " + sourceFolder.getAbsolutePath(), sourceFolder.exists());
       assertFalse("Destination folder shouldn't exist", destinationFolder.exists());
    }
@@ -155,6 +161,35 @@ public class JasperReportTest extends AbstractMojoTestCase {
       }
    }
 
-   // TODO test folder structure remains.
+   /**
+    * Test that the folder structure of the output is the same as the folder structure of the input.
+    * @throws Exception
+    */
+   public void testFolderStructure() throws Exception {
+      setupSourceAndDestinationFolder("/folderStructure", "/folderStructure_out");
+      getAndExecuteMojo(getBasedir() + "/src/test/resources/testFolderStructurePom.xml");
+      Set<String> filenames = detectFolderStructure(destinationFolder);
+      String relativePath = destinationFolder.getAbsolutePath() + '/';
+      String fileMissing = "A file in the folderstructure is missing";
+      assertTrue(fileMissing, filenames.remove(relativePath + "LandscapeReport.jasper"));
+      assertTrue(fileMissing, filenames.remove(relativePath + "level.1/level.2.1/LateOrdersReport.jasper"));
+      assertTrue(fileMissing, filenames.remove(relativePath + "level.1/level.2.2/MasterReport.jasper"));
+      assertTrue(fileMissing, filenames.remove(relativePath + "level.1/level.2.2/Level.3/LineChartReport.jasper"));
+      assertTrue("There were more files found then expected", filenames.isEmpty());
+   }
+
+   private Set<String> detectFolderStructure(File folderToSearch) {
+      Set<String> set = new HashSet<String>();
+      for (File f : folderToSearch.listFiles()) {
+         if (f.isDirectory()) {
+            set.addAll(detectFolderStructure(f));
+         } else {
+            set.add(f.getAbsolutePath());
+         }
+      }
+      return set;
+   }
+
+   
 
 }

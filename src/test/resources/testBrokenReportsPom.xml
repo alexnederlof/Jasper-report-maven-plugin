@@ -27,8 +27,8 @@
 					<numberOfThreads>4</numberOfThreads>
 					<outputFileExt>.jasper</outputFileExt>
 					<sourceFileExt>.jrxml</sourceFileExt>
-					<sourceDirectory>target/test-classes/unit/exampleFolders/brokenReports</sourceDirectory>
-					<outputDirectory>target/test-classes/unit/exampleFolders/brokenReports_out</outputDirectory>										
+					<sourceDirectory>target/test-classes/exampleFolders/brokenReports</sourceDirectory>
+					<outputDirectory>target/unitTestReports/brokenReports_out</outputDirectory>										
 				</configuration>
 			</plugin>
 		</plugins>
