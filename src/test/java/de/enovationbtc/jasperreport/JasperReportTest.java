@@ -18,6 +18,7 @@ package de.enovationbtc.jasperreport;
  */
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,24 +36,17 @@ public class JasperReportTest extends AbstractMojoTestCase {
    private File examplesFolder;
    private File sourceFolder;
    private File destinationFolder;
-   private File exampleOutputDir;
-
+   
    @Override
    protected void setUp() throws Exception {
       super.setUp();
       examplesFolder = new File(getBasedir(), TARGET_EXAMPLE_FOLDER);
-      exampleOutputDir = new File(getBasedir(), TARGET_EXAMPLE_OUT_FOLDER);
       assertTrue("The folder to copy the examples from doesn't exist", examplesFolder.exists());      
    }
 
    @Override
    protected void tearDown() throws Exception {
-      super.tearDown();      
-      for (File f : examplesFolder.listFiles()) {
-         if (f.isDirectory() && f.getName().endsWith("_out")) {
-//            FileUtils.deleteDirectory(f);
-         }
-      }
+      super.tearDown();            
    }
 
    /**
@@ -74,22 +68,31 @@ public class JasperReportTest extends AbstractMojoTestCase {
 
    }
 
-   public void getAndExecuteMojo(String pluginPom) throws Exception, MojoExecutionException {
+   private void getAndExecuteMojo(String pluginPom) throws Exception, MojoExecutionException {
       JasperReporter mojo = (JasperReporter) lookupMojo("jasper", pluginPom);
       assertNotNull(mojo);
       mojo.execute();
    }
 
-   public void setupSourceAndDestinationFolder(String sourceFolderName, String destinationFolderName) {
+   /**
+    * Create the source and destination folder. If the destination folder already exsist is shall be
+    * deleted. Otherwise the tests can't run properly.
+    */
+   private void setupSourceAndDestinationFolder(String sourceFolderName, String destinationFolderName) 
+         throws IOException {
       sourceFolder = new File(getBasedir(), TARGET_EXAMPLE_FOLDER + sourceFolderName);
       destinationFolder = new File(getBasedir(), TARGET_EXAMPLE_OUT_FOLDER + destinationFolderName);
       if (destinationFolder.exists()) {
-         destinationFolder.delete();
+         FileUtils.deleteDirectory(destinationFolder);         
       }
       assertTrue("Source folder doesn't exist: " + sourceFolder.getAbsolutePath(), sourceFolder.exists());
       assertFalse("Destination folder shouldn't exist", destinationFolder.exists());
    }
 
+   /**
+    * For this method to work all files need to be in one folder. The could be enhanced later to also search
+    * all subfolders.
+    */
    private void assertAllFilesAreCompiled(File sourceFolder, File destinationFolder) {
       assertTrue("Source folder is not a directory", sourceFolder.isDirectory());
       assertTrue("Destination is not a directory", destinationFolder.isDirectory());
@@ -163,7 +166,7 @@ public class JasperReportTest extends AbstractMojoTestCase {
 
    /**
     * Test that the folder structure of the output is the same as the folder structure of the input.
-    * @throws Exception
+    * @throws Exception When an unexpected error occurs.
     */
    public void testFolderStructure() throws Exception {
       setupSourceAndDestinationFolder("/folderStructure", "/folderStructure_out");

@@ -32,6 +32,9 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 
 /**
+ * This plugin compiles jasper source files to the target folder. While doing so, it keeps the
+ * folder structure in tact.
+ * 
  * @goal jasper
  * @phase process-resources
  */
@@ -75,6 +78,14 @@ public class JasperReporter extends AbstractMojo {
     * @parameter default-value="true"
     */
    private boolean xmlValidation;
+   
+   /**
+    * If verbose is on the plug-in will report which reports it is compiling and
+    * which files are being skipped.
+    * 
+    * @parameter default-value="false"
+    */
+   private boolean verbose;
 
    /**
     * The number of threads the reporting will use. Default is 4 which is good
@@ -96,9 +107,9 @@ public class JasperReporter extends AbstractMojo {
                + "with the 'clean' goal.");
          return;
       }
-
-      logConfiguration(log);
-
+      if (verbose) {
+         logConfiguration(log);
+      }
       checkOutDirWritable(outputDirectory);
 
       JRProperties.setProperty(JRProperties.COMPILER_XML_VALIDATION, xmlValidation);
@@ -143,7 +154,7 @@ public class JasperReporter extends AbstractMojo {
       } else if (!outputDirectory.canWrite()) {
          throw new MojoExecutionException(this, "Could not write to output folder",
                "Could not write to output folder: " + outputDirectory.getAbsolutePath());
-      } else {
+      } else if (verbose) {
          getLog().info("Output dir check OK");
       }
    }
@@ -156,10 +167,10 @@ public class JasperReporter extends AbstractMojo {
       for (File f : sourceDirectory.listFiles()) {
          if (f.isDirectory()) {
             tasks.addAll(generateTasks(f, createNewDest(f, destinationDirectory)));
-         } else { // It is a directory
+         } else { // It is a file
             if (f.getName().endsWith(sourceFileExt)) {
-               tasks.add(new CompileTask(f, destinationDirectory, sourceFileExt, outputFileExt, log));
-            } else {
+               tasks.add(new CompileTask(f, destinationDirectory, sourceFileExt, outputFileExt, log, verbose));
+            } else if (verbose) {
                log.info("Skipped " + f.getName() + " because it doesnt have the extension " + sourceFileExt);
             }
          }            
@@ -176,9 +187,9 @@ public class JasperReporter extends AbstractMojo {
    private void executeTasks(List<CompileTask> tasks) throws MojoExecutionException {
       try {
          long t1 = System.currentTimeMillis();
-         List<Future<String>> output = Executors.newFixedThreadPool(numberOfThreads).invokeAll(tasks);
-         long time = (System.currentTimeMillis() - t1) / 1000;
-         getLog().info("Generated " + output.size() + " reports in " + time + " seconds");
+         List<Future<Void>> output = Executors.newFixedThreadPool(numberOfThreads).invokeAll(tasks);
+         long time = (System.currentTimeMillis() - t1);
+         getLog().info("Generated " + output.size() + " jasper reports in " + (time/1000.0) + " seconds");
          checkForExceptions(output);
       } catch (InterruptedException e) {
          log.error("Failed to compile Japser reports: Interrupted!", e);
@@ -192,8 +203,8 @@ public class JasperReporter extends AbstractMojo {
       }
    }
 
-   private void checkForExceptions(List<Future<String>> output) throws InterruptedException, ExecutionException {
-      for (Future<String> future : output) {
+   private void checkForExceptions(List<Future<Void>> output) throws InterruptedException, ExecutionException {
+      for (Future<Void> future : output) {
          future.get();         
       }
    }
