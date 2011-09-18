@@ -64,7 +64,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
 				<configuration>
-					<tagBase>https://svn.e-btc.eu:44344/svnrepos/jasper-reports-plugin/tags</tagBase>
 					<goals>deploy site</goals>
 				</configuration>
 			</plugin>
