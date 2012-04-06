@@ -27,186 +27,200 @@ import java.util.concurrent.Future;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.util.JRProperties;
 
+import org.apache.commons.lang.Validate;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 
 /**
- * This plugin compiles jasper source files to the target folder. While doing so, it keeps the
- * folder structure in tact.
+ * This plugin compiles jasper source files to the target folder. While doing
+ * so, it keeps the folder structure in tact.
  * 
  * @goal jasper
  * @phase process-resources
  */
 public class JasperReporter extends AbstractMojo {
 
-   static final String ERROR_JRE_COMPILE_ERROR = "Some Jasper reports could not be compiled. See log above for details.";
+	static final String ERROR_JRE_COMPILE_ERROR = "Some Jasper reports could not be compiled. See log above for details.";
 
-   /**
-    * This is where the .jasper files are written.
-    * 
-    * @parameter expression="${project.build.outputDirectory}/jasper"
-    */
-   private File outputDirectory;
+	/**
+	 * This is where the .jasper files are written.
+	 * 
+	 * @parameter expression="${project.build.outputDirectory}/jasper"
+	 */
+	private File outputDirectory;
 
-   /**
-    * This is where the xml report design files should be.
-    * 
-    * @parameter default-value="src/main/jasperreports"
-    */
-   private File sourceDirectory;
+	/**
+	 * This is where the xml report design files should be.
+	 * 
+	 * @parameter default-value="src/main/jasperreports"
+	 */
+	private File sourceDirectory;
 
-   /**
-    * The extension of the source files to look for. Finds files with a .jrxml
-    * extension by default.
-    * 
-    * @parameter default-value=".jrxml"
-    */
-   private String sourceFileExt;
+	/**
+	 * The extension of the source files to look for. Finds files with a .jrxml
+	 * extension by default.
+	 * 
+	 * @parameter default-value=".jrxml"
+	 */
+	private String sourceFileExt;
 
-   /**
-    * The extension of the compiled report files. Creates files with a .jasper
-    * extension by default.
-    * 
-    * @parameter default-value=".jasper"
-    */
-   private String outputFileExt;
+	/**
+	 * The extension of the compiled report files. Creates files with a .jasper
+	 * extension by default.
+	 * 
+	 * @parameter default-value=".jasper"
+	 */
+	private String outputFileExt;
 
-   /**
-    * Check the source files before compiling. Default value is true.
-    * 
-    * @parameter default-value="true"
-    */
-   private boolean xmlValidation;
-   
-   /**
-    * If verbose is on the plug-in will report which reports it is compiling and
-    * which files are being skipped.
-    * 
-    * @parameter default-value="false"
-    */
-   private boolean verbose;
+	/**
+	 * Check the source files before compiling. Default value is true.
+	 * 
+	 * @parameter default-value="true"
+	 */
+	private boolean xmlValidation;
 
-   /**
-    * The number of threads the reporting will use. Default is 4 which is good
-    * for a lot of reports on a hard drive (in stead of SSD). If you only have a few, 
-    * or if you have SSD, it might be faster to set it to 2.
-    * 
-    * @parameter default-value=4
-    */
-   private int numberOfThreads;
+	/**
+	 * If verbose is on the plug-in will report which reports it is compiling and
+	 * which files are being skipped.
+	 * 
+	 * @parameter default-value="false"
+	 */
+	private boolean verbose;
 
-   private Log log;
+	/**
+	 * The number of threads the reporting will use. Default is 4 which is good
+	 * for a lot of reports on a hard drive (in stead of SSD). If you only have a
+	 * few, or if you have SSD, it might be faster to set it to 2.
+	 * 
+	 * @parameter default-value=4
+	 */
+	private int numberOfThreads;
 
-   @Override
-   public void execute() throws MojoExecutionException {
-      log = getLog();
+	private Log log;
 
-      if (outputDirectory.exists() && outputDirectory.listFiles().length > 0) {
-         log.info("It seems the Jasper reports are already compiled. If you want to re-compile, run maven "
-               + "with the 'clean' goal.");
-         return;
-      }
-      if (verbose) {
-         logConfiguration(log);
-      }
-      checkOutDirWritable(outputDirectory);
+	@Override
+	public void execute() throws MojoExecutionException {
+		log = getLog();
 
-      JRProperties.setProperty(JRProperties.COMPILER_XML_VALIDATION, xmlValidation);
+		if (outputDirectory.exists() && outputDirectory.listFiles().length > 0) {
+			log.info("It seems the Jasper reports are already compiled. If you want to re-compile, run maven "
+					+ "with the 'clean' goal.");
+			return;
+		}
+		if (verbose) {
+			logConfiguration(log);
+		}
+		checkOutDirWritable(outputDirectory);
 
-      List<CompileTask> tasks = generateTasks(sourceDirectory, outputDirectory);
-      
-      if (tasks.isEmpty()) {
-         log.info("Nothing to compile");
-         return;
-      }      
-      executeTasks(tasks);
-   }
+		JRProperties.setProperty(JRProperties.COMPILER_XML_VALIDATION, xmlValidation);
 
-   private void logConfiguration(Log log) {
-      log.info("Generating Jasper reports");
-      log.info("Outputdir=" + outputDirectory.getAbsolutePath());
-      log.info("Sourcedir=" + sourceDirectory.getAbsolutePath());
-      log.info("Output ext=" + outputFileExt);
-      log.info("Source ext=" + sourceFileExt);
-      log.info("XML Validation=" + xmlValidation);
-      log.info("Numer of threads:" + numberOfThreads);
-   }
+		List<CompileTask> tasks = generateTasks(sourceDirectory, outputDirectory);
 
-   /**
-    * Check if the output directory exist and is writable. If not, try to create
-    * an output dir and see if that is writable.
-    * 
-    * @param outputDirectory
-    * @throws MojoExecutionException
-    */
-   private void checkOutDirWritable(File outputDirectory) throws MojoExecutionException {
-      if (outputDirectory.exists()) {
-         if (outputDirectory.canWrite()) {
-            return;
-         } else {
-            throw new MojoExecutionException("The output dir was not writable. "
-                  + "Try running maven with the 'clean' goal.");
-         }
-      } else if (!outputDirectory.mkdirs()) {
-         throw new MojoExecutionException(this, "Output folder could not be created",
-               "Outputfolder " + outputDirectory.getAbsolutePath() + " is not a folder");
-      } else if (!outputDirectory.canWrite()) {
-         throw new MojoExecutionException(this, "Could not write to output folder",
-               "Could not write to output folder: " + outputDirectory.getAbsolutePath());
-      } else if (verbose) {
-         getLog().info("Output dir check OK");
-      }
-   }
+		if (tasks.isEmpty()) {
+			log.info("Nothing to compile");
+			return;
+		}
+		executeTasks(tasks);
+	}
 
-   private List<CompileTask> generateTasks(File sourceDirectory, File destinationDirectory) {
-      if (!sourceDirectory.isDirectory()) {
-         throw new IllegalArgumentException(sourceDirectory.getName() + " is not a directory");
-      }
-      List<CompileTask> tasks = new LinkedList<CompileTask>(); 
-      for (File f : sourceDirectory.listFiles()) {
-         if (f.isDirectory()) {
-            tasks.addAll(generateTasks(f, createNewDest(f, destinationDirectory)));
-         } else { // It is a file
-            if (f.getName().endsWith(sourceFileExt)) {
-               tasks.add(new CompileTask(f, destinationDirectory, sourceFileExt, outputFileExt, log, verbose));
-            } else if (verbose) {
-               log.info("Skipped " + f.getName() + " because it doesnt have the extension " + sourceFileExt);
-            }
-         }            
-      }
-      return tasks;
-   }
+	private void logConfiguration(Log log) {
+		log.info("Generating Jasper reports");
+		log.info("Outputdir=" + outputDirectory.getAbsolutePath());
+		log.info("Sourcedir=" + sourceDirectory.getAbsolutePath());
+		log.info("Output ext=" + outputFileExt);
+		log.info("Source ext=" + sourceFileExt);
+		log.info("XML Validation=" + xmlValidation);
+		log.info("Numer of threads:" + numberOfThreads);
+	}
 
-   private File createNewDest(File origin, File destinationDirectory) {
-      File newDest = new File(destinationDirectory, origin.getName());
-      newDest.mkdir();
-      return newDest;
-   }
+	/**
+	 * Check if the output directory exist and is writable. If not, try to create
+	 * an output dir and see if that is writable.
+	 * 
+	 * @param outputDirectory
+	 * @throws MojoExecutionException
+	 */
+	private void checkOutDirWritable(File outputDirectory) throws MojoExecutionException {
+		if (outputDirectory.exists()) {
+			if (outputDirectory.canWrite()) {
+				return;
+			} else {
+				throw new MojoExecutionException("The output dir exists but was not writable. "
+						+ "Try running maven with the 'clean' goal.");
+			}
+		}
+		checkIfOutpuCanBeCreated();
+		checkIfOutputDirIsWritable();
+		if (verbose) {
+			getLog().info("Output dir check OK");
+		}
+	}
 
-   private void executeTasks(List<CompileTask> tasks) throws MojoExecutionException {
-      try {
-         long t1 = System.currentTimeMillis();
-         List<Future<Void>> output = Executors.newFixedThreadPool(numberOfThreads).invokeAll(tasks);
-         long time = (System.currentTimeMillis() - t1);
-         getLog().info("Generated " + output.size() + " jasper reports in " + (time/1000.0) + " seconds");
-         checkForExceptions(output);
-      } catch (InterruptedException e) {
-         log.error("Failed to compile Japser reports: Interrupted!", e);
-         throw new MojoExecutionException("Error while compiling Jasper reports", e);
-      } catch (ExecutionException e) {
-         if (e.getCause() instanceof JRException) {
-            throw new MojoExecutionException(ERROR_JRE_COMPILE_ERROR, e);
-         } else {
-            throw new MojoExecutionException("Error while compiling Jasper reports", e);
-         }
-      }
-   }
+	private void checkIfOutpuCanBeCreated() throws MojoExecutionException {
+		if (!outputDirectory.mkdirs()) {
+			throw new MojoExecutionException(this, "Output folder could not be created",
+					"Outputfolder " + outputDirectory.getAbsolutePath() + " is not a folder");
+		}
+	}
 
-   private void checkForExceptions(List<Future<Void>> output) throws InterruptedException, ExecutionException {
-      for (Future<Void> future : output) {
-         future.get();         
-      }
-   }
+	private void checkIfOutputDirIsWritable() throws MojoExecutionException {
+		if (!outputDirectory.canWrite()) {
+			throw new MojoExecutionException(this, "Could not write to output folder",
+					"Could not write to output folder: " + outputDirectory.getAbsolutePath());
+		}
+	}
+
+	private List<CompileTask> generateTasks(File sourceDirectory, File destinationDirectory) {
+		Validate.isTrue(sourceDirectory.isDirectory(), sourceDirectory.getName() + " is not a directory");
+		List<CompileTask> tasks = new LinkedList<CompileTask>();
+		for (File f : sourceDirectory.listFiles()) {
+			generateTasks(destinationDirectory, tasks, f);
+		}
+		return tasks;
+	}
+
+	private void generateTasks(File destinationDirectory, List<CompileTask> tasks, File f) {
+		if (f.isDirectory()) {
+			tasks.addAll(generateTasks(f, createNewDest(f, destinationDirectory)));
+		} else { // It is a file
+			if (f.getName().endsWith(sourceFileExt)) {
+				tasks.add(new CompileTask(f, destinationDirectory, sourceFileExt, outputFileExt, log, verbose));
+			} else if (verbose) {
+				log.info("Skipped " + f.getName() + " because it doesnt have the extension " + sourceFileExt);
+			}
+		}
+	}
+
+	private File createNewDest(File origin, File destinationDirectory) {
+		File newDest = new File(destinationDirectory, origin.getName());
+		newDest.mkdir();
+		return newDest;
+	}
+
+	private void executeTasks(List<CompileTask> tasks) throws MojoExecutionException {
+		try {
+			long t1 = System.currentTimeMillis();
+			List<Future<Void>> output = Executors.newFixedThreadPool(numberOfThreads).invokeAll(tasks);
+			long time = (System.currentTimeMillis() - t1);
+			getLog().info("Generated " + output.size() + " jasper reports in " + (time / 1000.0) + " seconds");
+			checkForExceptions(output);
+		} catch (InterruptedException e) {
+			log.error("Failed to compile Japser reports: Interrupted!", e);
+			throw new MojoExecutionException("Error while compiling Jasper reports", e);
+		} catch (ExecutionException e) {
+			if (e.getCause() instanceof JRException) {
+				throw new MojoExecutionException(ERROR_JRE_COMPILE_ERROR, e);
+			} else {
+				throw new MojoExecutionException("Error while compiling Jasper reports", e);
+			}
+		}
+	}
+
+	private void checkForExceptions(List<Future<Void>> output) throws InterruptedException, ExecutionException {
+		for (Future<Void> future : output) {
+			future.get();
+		}
+	}
 
 }
