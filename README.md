@@ -20,7 +20,7 @@ You can then use the plugin using by adding this to the pom: (replace the versio
 			<plugin>
 				<groupId>com.alexnederlof</groupId>
 				<artifactId>jasperreports-plugin</artifactId>
-				<version>1.2-SNAPSHOT</version>
+				<version>1.5-SNAPSHOT</version>
 				<executions>
 					<execution>
 						<phase>process-sources</phase>
