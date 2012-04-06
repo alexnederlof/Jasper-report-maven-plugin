@@ -77,13 +77,13 @@ public class CompileTask implements Callable<Void> {
 					log.info("Compiling " + newFilename);
 				}
 			}
-		} catch (JRException e) {
+		} catch (Exception e) {
 			cleanUpAndThrowError(out, e);
 		}
 		return null;
 	}
 
-	private void cleanUpAndThrowError(File out, JRException e) throws JRException {
+	private void cleanUpAndThrowError(File out, Exception e) throws JRException {
 		log.error("Could not compile " + source.getName(), e);
 		if (out != null && out.exists()) {
 			out.delete();

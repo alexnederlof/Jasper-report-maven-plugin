@@ -5,11 +5,12 @@
 		xmlns="http://jasperreports.sourceforge.net/jasperreports"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
-		name="CustomersReport" pageWidth="595" pageHeight="842" columnWidth="515" leftMargin="40" rightMargin="40" topMargin="50" bottomMargin="50">
+		name="JsonCustomersReport" pageWidth="595" pageHeight="842" columnWidth="515" leftMargin="40" rightMargin="40" topMargin="50" bottomMargin="50">
+	<property name="net.sf.jasperreports.json.source" value="data/northwind.json"/>
 	<style name="Sans_Normal" isDefault="true" fontName="DejaVu Sans" fontSize="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 	<style name="Sans_Bold" isDefault="false" fontName="DejaVu Sans" fontSize="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 	<style name="Sans_Italic" isDefault="false" fontName="DejaVu Sans" fontSize="12" isBold="false" isItalic="true" isUnderline="false" isStrikeThrough="false"/>
-	<queryString language="xPath"><![CDATA[/Northwind/Customers]]></queryString>
+	<queryString language="json"><![CDATA[Northwind.Customers]]></queryString>
 	<field name="CustomerID" class="java.lang.String">
 		<fieldDescription><![CDATA[CustomerID]]></fieldDescription>
 	</field>
@@ -55,25 +56,22 @@
 			</line>
 			<subreport>
 				<reportElement isPrintRepeatedValues="false" x="5" y="25" width="507" height="20" isRemoveLineWhenBlank="true" backcolor="#ffcc99"/>
-				<subreportParameter name="XML_DATA_DOCUMENT">
-					<subreportParameterExpression>$P{XML_DATA_DOCUMENT}</subreportParameterExpression>
+				<subreportParameter name="net.sf.jasperreports.json.date.pattern">
+					<subreportParameterExpression>$P{net.sf.jasperreports.json.date.pattern}</subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="XML_DATE_PATTERN">
-					<subreportParameterExpression>$P{XML_DATE_PATTERN}</subreportParameterExpression>
+				<subreportParameter name="net.sf.jasperreports.json.number.pattern">
+					<subreportParameterExpression>$P{net.sf.jasperreports.json.number.pattern}</subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="XML_NUMBER_PATTERN">
-					<subreportParameterExpression>$P{XML_NUMBER_PATTERN}</subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="XML_LOCALE">
-					<subreportParameterExpression>$P{XML_LOCALE}</subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="XML_TIME_ZONE">
-					<subreportParameterExpression>$P{XML_TIME_ZONE}</subreportParameterExpression>
+				<subreportParameter name="JSON_LOCALE">
+					<subreportParameterExpression>$P{JSON_LOCALE}</subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="CustomerID">
 					<subreportParameterExpression>$F{CustomerID}</subreportParameterExpression>
 				</subreportParameter>
-				<subreportExpression class="java.lang.String"><![CDATA["OrdersReport.jasper"]]></subreportExpression>
+				<subreportParameter name="net.sf.jasperreports.json.source">
+					<subreportParameterExpression><![CDATA["data/northwind.json"]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression class="java.lang.String"><![CDATA["JsonOrdersReport.jasper"]]></subreportExpression>
 			</subreport>
 			<textField>
 				<reportElement x="109" y="5" width="291" height="15" isPrintWhenDetailOverflows="true" style="Sans_Bold"/>

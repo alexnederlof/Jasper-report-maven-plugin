@@ -5,12 +5,12 @@
 		xmlns="http://jasperreports.sourceforge.net/jasperreports"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
-		name="OrdersReport" pageWidth="500" pageHeight="842" columnWidth="500" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+		name="JsonOrdersReport" pageWidth="500" pageHeight="842" columnWidth="500" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
 	<style name="Sans_Normal" isDefault="true" fontName="DejaVu Sans" fontSize="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 	<style name="Sans_Bold" isDefault="false" fontName="DejaVu Sans" fontSize="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 	<style name="Sans_Italic" isDefault="false" fontName="DejaVu Sans" fontSize="8" isBold="false" isItalic="true" isUnderline="false" isStrikeThrough="false"/>
 	<parameter name="CustomerID" class="java.lang.String"/>
-	<queryString language="xPath"><![CDATA[/Northwind/Orders[CustomerID='$P{CustomerID}']]]></queryString>
+	<queryString language="json"><![CDATA[Northwind.Orders(CustomerID == $P{CustomerID})]]></queryString>
 	<field name="Id" class="java.lang.String">
 		<fieldDescription><![CDATA[OrderID]]></fieldDescription>
 	</field>
