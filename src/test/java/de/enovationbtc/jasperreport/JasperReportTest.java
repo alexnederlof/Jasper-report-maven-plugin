@@ -41,7 +41,7 @@ public class JasperReportTest extends AbstractMojoTestCase {
    protected void setUp() throws Exception {
       super.setUp();
       examplesFolder = new File(getBasedir(), TARGET_EXAMPLE_FOLDER);
-      assertTrue("The folder to copy the examples from doesn't exist", examplesFolder.exists());      
+      assertTrue("The folder to copy the examples from doesn't exist", examplesFolder.exists());
    }
 
    @Override
@@ -174,10 +174,10 @@ public class JasperReportTest extends AbstractMojoTestCase {
       Set<String> filenames = detectFolderStructure(destinationFolder);
       String relativePath = destinationFolder.getAbsolutePath() + '/';
       String fileMissing = "A file in the folderstructure is missing";
-      assertTrue(fileMissing, filenames.remove(relativePath + "LandscapeReport.jasper"));
-      assertTrue(fileMissing, filenames.remove(relativePath + "level.1/level.2.1/LateOrdersReport.jasper"));
-      assertTrue(fileMissing, filenames.remove(relativePath + "level.1/level.2.2/MasterReport.jasper"));
-      assertTrue(fileMissing, filenames.remove(relativePath + "level.1/level.2.2/Level.3/LineChartReport.jasper"));
+      assertTrue(fileMissing, filenames.remove(new File(relativePath + "LandscapeReport.jasper").getAbsolutePath()));
+      assertTrue(fileMissing, filenames.remove(new File(relativePath + "level.1/level.2.1/LateOrdersReport.jasper").getAbsolutePath()));
+      assertTrue(fileMissing, filenames.remove(new File(relativePath + "level.1/level.2.2/MasterReport.jasper").getAbsolutePath()));
+      assertTrue(fileMissing, filenames.remove(new File(relativePath + "level.1/level.2.2/Level.3/LineChartReport.jasper").getAbsolutePath()));
       assertTrue("There were more files found then expected", filenames.isEmpty());
    }
 

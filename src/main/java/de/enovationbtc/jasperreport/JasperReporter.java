@@ -24,8 +24,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.util.JRProperties;
+import net.sf.jasperreports.engine.design.JRCompiler;
+import net.sf.jasperreports.engine.design.JRJdtCompiler;
+import net.sf.jasperreports.engine.xml.JRReportSaxParserFactory;
 
 import org.apache.commons.lang.Validate;
 import org.apache.maven.plugin.AbstractMojo;
@@ -42,6 +45,14 @@ import org.apache.maven.plugin.logging.Log;
 public class JasperReporter extends AbstractMojo {
 
 	static final String ERROR_JRE_COMPILE_ERROR = "Some Jasper reports could not be compiled. See log above for details.";
+
+    /**
+     * This is the java compiler used
+     *
+     * @parameter default-value="net.sf.jasperreports.engine.design.JRJdtCompiler"
+     * @required
+     */
+    private String compiler;
 
 	/**
 	 * This is where the .jasper files are written.
@@ -99,7 +110,10 @@ public class JasperReporter extends AbstractMojo {
 
 	private Log log;
 
-	@Override
+    public JasperReporter() {
+    }
+
+    @Override
 	public void execute() throws MojoExecutionException {
 		log = getLog();
 
@@ -113,7 +127,11 @@ public class JasperReporter extends AbstractMojo {
 		}
 		checkOutDirWritable(outputDirectory);
 
-		JRProperties.setProperty(JRProperties.COMPILER_XML_VALIDATION, xmlValidation);
+        DefaultJasperReportsContext jasperReportsContext = DefaultJasperReportsContext.getInstance();
+        jasperReportsContext.setProperty(JRReportSaxParserFactory.COMPILER_XML_VALIDATION, String.valueOf(xmlValidation));
+        jasperReportsContext.setProperty(JRCompiler.COMPILER_CLASS, compiler == null ?
+            JRJdtCompiler.class.getName() : compiler);
+        jasperReportsContext.setProperty(JRCompiler.COMPILER_KEEP_JAVA_FILE, Boolean.FALSE.toString());
 
 		List<CompileTask> tasks = generateTasks(sourceDirectory, outputDirectory);
 
@@ -131,7 +149,8 @@ public class JasperReporter extends AbstractMojo {
 		log.info("Output ext=" + outputFileExt);
 		log.info("Source ext=" + sourceFileExt);
 		log.info("XML Validation=" + xmlValidation);
-		log.info("Numer of threads:" + numberOfThreads);
+        log.info("JasperReports Compiler=" + compiler);
+		log.info("Number of threads:" + numberOfThreads);
 	}
 
 	/**

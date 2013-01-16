@@ -20,7 +20,18 @@
 		<developerConnection>scm:git:git@github.com:alexnederlof/Jasper-report-maven-plugin.git</developerConnection>
 	</scm>
 
+    <developers>
+        <developer>
+            <id>alexnederlof</id>
+            <name>Alex Nederlof</name>
+        </developer>
 
+        <developer>
+            <id>ammachado</id>
+            <name>Adriano Machado</name>
+            <email>adriano.m.machado@hotmail.com</email>
+        </developer>
+    </developers>
 
 	<dependencies>
 		<dependency>
@@ -36,10 +47,17 @@
 			<scope>test</scope>
 		</dependency>
 
+        <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-utils</artifactId>
+            <version>3.0</version>
+            <scope>test</scope>
+        </dependency>
+
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
-			<version>4.5.1</version>
+			<version>5.0.1</version>
 		</dependency>
 
 		<dependency>
@@ -71,6 +89,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
+                <version>2.2.2</version>
 				<configuration>
 					<goals>deploy site</goals>
 				</configuration>
@@ -80,15 +99,8 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.10</version>
 				<configuration>
-					<encoding>UTF-8</encoding>
 					<useFile>false</useFile>
 				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.2.2</version>
 			</plugin>
 
 			<plugin>
