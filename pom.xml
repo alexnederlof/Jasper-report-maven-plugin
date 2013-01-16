@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.alexnederlof</groupId>
 	<artifactId>jasperreports-plugin</artifactId>
@@ -20,24 +21,24 @@
 		<developerConnection>scm:git:git@github.com:alexnederlof/Jasper-report-maven-plugin.git</developerConnection>
 	</scm>
 
-    <developers>
-        <developer>
-            <id>alexnederlof</id>
-            <name>Alex Nederlof</name>
-        </developer>
+	<developers>
+		<developer>
+			<id>alexnederlof</id>
+			<name>Alex Nederlof</name>
+		</developer>
 
-        <developer>
-            <id>ammachado</id>
-            <name>Adriano Machado</name>
-            <email>adriano.m.machado@hotmail.com</email>
-        </developer>
-    </developers>
+		<developer>
+			<id>ammachado</id>
+			<name>Adriano Machado</name>
+			<email>adriano.m.machado@hotmail.com</email>
+		</developer>
+	</developers>
 
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.10</version>
+			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -47,12 +48,12 @@
 			<scope>test</scope>
 		</dependency>
 
-        <dependency>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-utils</artifactId>
-            <version>3.0</version>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.codehaus.plexus</groupId>
+			<artifactId>plexus-utils</artifactId>
+			<version>3.0.10</version>
+			<scope>test</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
@@ -64,40 +65,26 @@
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 			<version>2.6</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>
 			<version>3.0.3</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 
 	<build>
-		<extensions>
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ssh</artifactId>
-				<version>2.2</version>
-			</extension>
-		</extensions>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
-                <version>2.2.2</version>
-				<configuration>
-					<goals>deploy site</goals>
-				</configuration>
+				<version>2.4</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.10</version>
+				<version>2.12.4</version>
 				<configuration>
 					<useFile>false</useFile>
 				</configuration>
@@ -106,7 +93,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
-				<version>3.0</version>
+				<version>3.2</version>
 				<configuration>
 
 					<reportPlugins>
@@ -136,7 +123,7 @@
 						<plugin> <!-- JUnit report -->
 							<groupId>org.apache.maven.plugins</groupId>
 							<artifactId>maven-surefire-report-plugin</artifactId>
-							<version>2.8.1</version>
+							<version>2.13</version>
 						</plugin>
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
@@ -152,7 +139,7 @@
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
 							<artifactId>maven-checkstyle-plugin</artifactId>
-							<version>2.6</version>
+							<version>2.9.1</version>
 							<configuration>
 								<configLocation>checkstyle.xml</configLocation>
 							</configuration>
