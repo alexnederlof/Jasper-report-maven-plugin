@@ -1,4 +1,4 @@
-package de.enovationbtc.jasperreport;
+package com.alexnederlof.jasperreport;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -25,6 +25,8 @@ import java.util.Set;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.codehaus.plexus.util.FileUtils;
+
+import com.alexnederlof.jasperreport.JasperReporter;
 
 /**
  * Test the report generation.

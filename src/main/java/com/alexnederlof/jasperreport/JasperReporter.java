@@ -1,4 +1,4 @@
-package de.enovationbtc.jasperreport;
+package com.alexnederlof.jasperreport;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -46,13 +46,14 @@ public class JasperReporter extends AbstractMojo {
 
 	static final String ERROR_JRE_COMPILE_ERROR = "Some Jasper reports could not be compiled. See log above for details.";
 
-    /**
-     * This is the java compiler used
-     *
-     * @parameter default-value="net.sf.jasperreports.engine.design.JRJdtCompiler"
-     * @required
-     */
-    private String compiler;
+	/**
+	 * This is the java compiler used
+	 * 
+	 * @parameter 
+	 *            default-value="net.sf.jasperreports.engine.design.JRJdtCompiler"
+	 * @required
+	 */
+	private String compiler;
 
 	/**
 	 * This is where the .jasper files are written.
@@ -110,10 +111,9 @@ public class JasperReporter extends AbstractMojo {
 
 	private Log log;
 
-    public JasperReporter() {
-    }
+	public JasperReporter() {}
 
-    @Override
+	@Override
 	public void execute() throws MojoExecutionException {
 		log = getLog();
 
@@ -127,11 +127,7 @@ public class JasperReporter extends AbstractMojo {
 		}
 		checkOutDirWritable(outputDirectory);
 
-        DefaultJasperReportsContext jasperReportsContext = DefaultJasperReportsContext.getInstance();
-        jasperReportsContext.setProperty(JRReportSaxParserFactory.COMPILER_XML_VALIDATION, String.valueOf(xmlValidation));
-        jasperReportsContext.setProperty(JRCompiler.COMPILER_CLASS, compiler == null ?
-            JRJdtCompiler.class.getName() : compiler);
-        jasperReportsContext.setProperty(JRCompiler.COMPILER_KEEP_JAVA_FILE, Boolean.FALSE.toString());
+		configureJasper();
 
 		List<CompileTask> tasks = generateTasks(sourceDirectory, outputDirectory);
 
@@ -149,7 +145,7 @@ public class JasperReporter extends AbstractMojo {
 		log.info("Output ext=" + outputFileExt);
 		log.info("Source ext=" + sourceFileExt);
 		log.info("XML Validation=" + xmlValidation);
-        log.info("JasperReports Compiler=" + compiler);
+		log.info("JasperReports Compiler=" + compiler);
 		log.info("Number of threads:" + numberOfThreads);
 	}
 
@@ -174,6 +170,14 @@ public class JasperReporter extends AbstractMojo {
 		if (verbose) {
 			getLog().info("Output dir check OK");
 		}
+	}
+
+	private void configureJasper() {
+		DefaultJasperReportsContext jasperReportsContext = DefaultJasperReportsContext.getInstance();
+		jasperReportsContext.setProperty(JRReportSaxParserFactory.COMPILER_XML_VALIDATION, String.valueOf(xmlValidation));
+		jasperReportsContext.setProperty(JRCompiler.COMPILER_PREFIX, compiler == null ?
+				JRJdtCompiler.class.getName() : compiler);
+		jasperReportsContext.setProperty(JRCompiler.COMPILER_KEEP_JAVA_FILE, Boolean.FALSE.toString());
 	}
 
 	private void checkIfOutpuCanBeCreated() throws MojoExecutionException {

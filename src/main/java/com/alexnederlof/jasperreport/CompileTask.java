@@ -1,4 +1,4 @@
-package de.enovationbtc.jasperreport;
+package com.alexnederlof.jasperreport;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
