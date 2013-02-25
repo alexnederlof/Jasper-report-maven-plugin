@@ -9,23 +9,19 @@ The original jasperreports-maven-plugin from org.codehaus.mojo was a bit slow. T
 
 Usage
 -----
-This plugin is not (yet) in the central maven repo. To use it you can clone this repository. After that just run
-
-	mvn clean install
-
-You can then use the plugin using by adding this to the pom: (replace the version number!);
+You can use the plugin by adding it to the plug-in section in your pom;
 
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>com.alexnederlof</groupId>
 				<artifactId>jasperreports-plugin</artifactId>
-				<version>1.5-SNAPSHOT</version>
+				<version>1.6</version>
 				<executions>
 					<execution>
 						<phase>process-sources</phase>
 		   				<goals>
-		      				<goal>jasper</goal>
+		      					<goal>jasper</goal>
 		   				</goals>
 		   			</execution>
 				</executions>
