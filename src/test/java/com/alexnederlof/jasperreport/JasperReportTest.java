@@ -98,10 +98,7 @@ public class JasperReportTest extends AbstractMojoTestCase {
         List<File> testFiles = Arrays.asList(destinationFolder.listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
-                if (pathname.toString().contains("PlainTextReportWithDefaultFontReport")) {
-                    return true;
-                }
-                return false;
+                return pathname.toString().contains("PlainTextReportWithDefaultFontReport");
             }
         }));
 
