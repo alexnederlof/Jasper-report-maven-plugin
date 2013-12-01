@@ -26,8 +26,34 @@ You can use the plugin by adding it to the plug-in section in your pom;
 		   			</execution>
 				</executions>
 				<configuration>
-					<outputDirectory>${project.build.directory}/jasper</outputDirectory>					
+					<!-- These are the default configurations: -->
+					<compiler>net.sf.jasperreports.engine.design.JRJdtCompiler</compiler>
+					<sourceDirectory>src/main/jasperreports</sourceDirectory>
+					<outputDirectory>${project.build.directory}/jasper</outputDirectory>
+					<outputFileExt>.jasper</outputFileExt</outputFileExt>
+					<xmlValidation>true</xmlValidation>
+					<verbose>false</verbose>
+					<numberOfThreads>4</numberOfThreads>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
+	
+If you want to pass any Jasper options to the compiler you can do so by adding them to the configuration like so:
+
+
+	<plugin>
+		...
+		<configuration>
+			...
+			<additionalProperties>
+				<net.sf.jasperreports.awt.ignore.missing.font>true</net.sf.jasperreports.awt.ignore.missing.font>
+				<net.sf.jasperreports.default.pdf.font.name>Courier</net.sf.jasperreports.default.pdf.font.name>
+				<net.sf.jasperreports.default.pdf.encoding>UTF-8</net.sf.jasperreports.default.pdf.encoding>
+				<net.sf.jasperreports.default.pdf.embedded>true</net.sf.jasperreports.default.pdf.embedded>
+            </additionalProperties>
+		</configuration>
+	</plugin>
+	
+	
+Other parameters you can set:

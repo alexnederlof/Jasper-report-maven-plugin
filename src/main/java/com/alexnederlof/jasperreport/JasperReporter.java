@@ -105,7 +105,23 @@ public class JasperReporter extends AbstractMojo {
 	 */
 	private int numberOfThreads;
 
-	/*
+	/**
+	 * Use this parameter to add additional properties to the Jasper compiler. For example. 
+	 * 
+	 * <pre>
+	 * {@code
+	 * <configuration>
+	 * 	... 
+	 * 		<additionalProperties>
+	 * 			<net.sf.jasperreports.awt.ignore.missing.font>true
+	 *			</net.sf.jasperreports.awt.ignore.missing.font>
+	 *          <net.sf.jasperreports.default.pdf.font.name>Courier</net.sf.jasperreports.default.pdf.font.name>
+	 *          <net.sf.jasperreports.default.pdf.encoding>UTF-8</net.sf.jasperreports.default.pdf.encoding>
+	 *          <net.sf.jasperreports.default.pdf.embedded>true</net.sf.jasperreports.default.pdf.embedded>
+	 		</additionalProperties>
+	 * </configuration>
+	 * }
+	 * </pre>
 	 * @parameter
 	 */
 	private Map<String, String> additionalProperties;
@@ -124,7 +140,7 @@ public class JasperReporter extends AbstractMojo {
 					+ "with the 'clean' goal.");
 			return;
 		}
-		if (1 == 1) {
+		if (verbose) {
 			logConfiguration(log);
 		}
 		checkOutDirWritable(outputDirectory);

@@ -126,9 +126,6 @@ public class JasperReportTest extends AbstractMojoTestCase {
 		File file = new File(destinationFolder.getPath() + "/" + filename);
 		try {
 			JasperPrint print = JasperFillManager.fillReport(new FileInputStream(file), new HashMap<String, Object>());
-
-			JasperExportManager exportManager =
-					JasperExportManager.getInstance(DefaultJasperReportsContext.getInstance());
 			JasperExportManager.exportReportToPdfStream(print, new NullOutputStream());
 		}
 		catch (IOException e) {

@@ -1,203 +1,202 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.alexnederlof</groupId>
-    <artifactId>jasperreports-plugin</artifactId>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.alexnederlof</groupId>
+	<artifactId>jasperreports-plugin</artifactId>
 
-    <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>7</version>
-    </parent>
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
 
-    <packaging>maven-plugin</packaging>
-    <version>1.7-SNAPSHOT</version>
-    <name>jasperreport-plugin</name>
-    <description>A Jasper compiler plugin</description>
-    <url>http://github.com/alexnederlof/Jasper-report-maven-plugin</url>
-
-
-    <properties>
-        <maven.compiler.source>1.6</maven.compiler.source>
-        <maven.compiler.target>1.6</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    </properties>
-
-    <prerequisites>
-        <maven>3.0.4</maven>
-    </prerequisites>
-
-    <scm>
-        <connection>scm:git:git@github.com:alexnederlof/Jasper-report-maven-plugin.git</connection>
-        <url>http://github.com/alexnederlof/Jasper-report-maven-plugin</url>
-        <developerConnection>scm:git:git@github.com:alexnederlof/Jasper-report-maven-plugin.git</developerConnection>
-        <tag>HEAD</tag>
-    </scm>
-
-    <developers>
-        <developer>
-            <id>alexnederlof</id>
-            <name>Alex Nederlof</name>
-        </developer>
-
-        <developer>
-            <id>ammachado</id>
-            <name>Adriano Machado</name>
-            <email>adriano.m.machado@hotmail.com</email>
-        </developer>
-    </developers>
-
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven.shared</groupId>
-            <artifactId>maven-plugin-testing-harness</artifactId>
-            <version>1.1</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-utils</artifactId>
-            <version>3.0.10</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports</artifactId>
-            <version>5.0.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-plugin-api</artifactId>
-            <version>3.0.4</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports-fonts</artifactId>
-            <version>4.0.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>3.3.2.GA</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-annotations</artifactId>
-            <version>3.4.0.GA</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>3.1.0.GA</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.6.1</version>
-        </dependency>
-    </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.4</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.13</version>
-                <configuration>
-                    <useFile>false</useFile>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>3.2</version>
-                <configuration>
-
-                    <reportPlugins>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-project-info-reports-plugin</artifactId>
-                            <configuration>
-                                <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-                            </configuration>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-jxr-plugin</artifactId>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-project-info-reports-plugin</artifactId>
-                            <configuration>
-                                <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
-                                <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-                            </configuration>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-javadoc-plugin</artifactId>
-                        </plugin>
-                        <plugin> <!-- JUnit report -->
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-surefire-report-plugin</artifactId>
-                            <version>2.13</version>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-pmd-plugin</artifactId>
-                            <version>2.5</version>
-                            <configuration>
-                                <targetJdk>${maven.compiler.source}</targetJdk>
-                                <rulesets>
-                                    <ruleset>pmd.xml</ruleset>
-                                </rulesets>
-                            </configuration>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-checkstyle-plugin</artifactId>
-                            <version>2.9.1</version>
-                            <configuration>
-                                <configLocation>checkstyle.xml</configLocation>
-                            </configuration>
-                        </plugin>
-                    </reportPlugins>
-                </configuration>
-            </plugin>
-        </plugins>
+	<packaging>maven-plugin</packaging>
+	<version>1.7-SNAPSHOT</version>
+	<name>jasperreport-plugin</name>
+	<description>A Jasper compiler plugin</description>
+	<url>http://github.com/alexnederlof/Jasper-report-maven-plugin</url>
 
 
-    </build>
+	<properties>
+		<maven.compiler.source>1.6</maven.compiler.source>
+		<maven.compiler.target>1.6</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	</properties>
 
-    <licenses>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+	<prerequisites>
+		<maven>3.0.4</maven>
+	</prerequisites>
+
+	<scm>
+		<connection>scm:git:git@github.com:alexnederlof/Jasper-report-maven-plugin.git</connection>
+		<url>http://github.com/alexnederlof/Jasper-report-maven-plugin</url>
+		<developerConnection>scm:git:git@github.com:alexnederlof/Jasper-report-maven-plugin.git</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
+
+	<developers>
+		<developer>
+			<id>alexnederlof</id>
+			<name>Alex Nederlof</name>
+		</developer>
+
+		<developer>
+			<id>ammachado</id>
+			<name>Adriano Machado</name>
+			<email>adriano.m.machado@hotmail.com</email>
+		</developer>
+	</developers>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.shared</groupId>
+			<artifactId>maven-plugin-testing-harness</artifactId>
+			<version>1.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.plexus</groupId>
+			<artifactId>plexus-utils</artifactId>
+			<version>3.0.10</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>5.0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-plugin-api</artifactId>
+			<version>3.0.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports-fonts</artifactId>
+			<version>4.0.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>3.3.2.GA</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-annotations</artifactId>
+			<version>3.4.0.GA</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>3.1.0.GA</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.4</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.13</version>
+				<configuration>
+					<useFile>false</useFile>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.2</version>
+				<configuration>
+
+					<reportPlugins>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-project-info-reports-plugin</artifactId>
+							<configuration>
+								<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+							</configuration>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-jxr-plugin</artifactId>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-project-info-reports-plugin</artifactId>
+							<configuration>
+								<dependencyDetailsEnabled>false</dependencyDetailsEnabled>
+								<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+							</configuration>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-javadoc-plugin</artifactId>
+						</plugin>
+						<plugin> <!-- JUnit report -->
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-surefire-report-plugin</artifactId>
+							<version>2.13</version>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-pmd-plugin</artifactId>
+							<version>2.5</version>
+							<configuration>
+								<targetJdk>${maven.compiler.source}</targetJdk>
+								<rulesets>
+									<ruleset>pmd.xml</ruleset>
+								</rulesets>
+							</configuration>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-checkstyle-plugin</artifactId>
+							<version>2.9.1</version>
+							<configuration>
+								<configLocation>checkstyle.xml</configLocation>
+							</configuration>
+						</plugin>
+					</reportPlugins>
+				</configuration>
+			</plugin>
+		</plugins>
+
+
+	</build>
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 </project>
