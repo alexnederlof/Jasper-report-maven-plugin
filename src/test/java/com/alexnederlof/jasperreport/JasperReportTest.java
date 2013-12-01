@@ -1,20 +1,14 @@
 package com.alexnederlof.jasperreport;
 
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with this
- * work for additional information regarding copyright ownership. The ASF
- * licenses this file to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * Licensed to the Apache Software Foundation (ASF) under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for additional information regarding
+ * copyright ownership. The ASF licenses this file to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License. You may obtain a
+ * copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable
+ * law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
+ * for the specific language governing permissions and limitations under the License.
  */
 
 import java.io.File;
@@ -26,175 +20,187 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.codehaus.plexus.util.FileUtils;
 
-import com.alexnederlof.jasperreport.JasperReporter;
-
 /**
  * Test the report generation.
  */
 public class JasperReportTest extends AbstractMojoTestCase {
 
-   private static final String TARGET_EXAMPLE_FOLDER = "target/test-classes/exampleFolders";
-   private static final String TARGET_EXAMPLE_OUT_FOLDER = "target/unitTestReports";
-   private File examplesFolder;
-   private File sourceFolder;
-   private File destinationFolder;
-   
-   @Override
-   protected void setUp() throws Exception {
-      super.setUp();
-      examplesFolder = new File(getBasedir(), TARGET_EXAMPLE_FOLDER);
-      assertTrue("The folder to copy the examples from doesn't exist", examplesFolder.exists());
-   }
+	private static final String TARGET_EXAMPLE_FOLDER = "target/test-classes/exampleFolders";
+	private static final String TARGET_EXAMPLE_OUT_FOLDER = "target/unitTestReports";
+	private File examplesFolder;
+	private File sourceFolder;
+	private File destinationFolder;
 
-   @Override
-   protected void tearDown() throws Exception {
-      super.tearDown();            
-   }
+	@Override
+	protected void setUp() throws Exception {
+		super.setUp();
+		examplesFolder = new File(getBasedir(), TARGET_EXAMPLE_FOLDER);
+		assertTrue("The folder to copy the examples from doesn't exist", examplesFolder.exists());
+	}
 
-   /**
-    * Test the normal generation of Jasper reports. The files are retrieved from
-    * the official jasper examples folder. No errors or warnings should occur.
-    * 
-    * @throws Exception When an unexpexted error occures.
-    */
-   public void testValidReportGeneration() throws Exception {
-      String pluginPom = getBasedir() + "/src/test/resources/testSampleReportsPom.xml";
+	@Override
+	protected void tearDown() throws Exception {
+		super.tearDown();
+	}
 
-      setupSourceAndDestinationFolder("/sampleReports", "/sampleReports_out");
+	/**
+	 * Test the normal generation of Jasper reports. The files are retrieved from the official
+	 * jasper examples folder. No errors or warnings should occur.
+	 * 
+	 * @throws Exception
+	 *             When an unexpexted error occures.
+	 */
+	public void testValidReportGeneration() throws Exception {
+		String pluginPom = getBasedir() + "/src/test/resources/testSampleReportsPom.xml";
 
-      getAndExecuteMojo(pluginPom);
+		setupSourceAndDestinationFolder("/sampleReports", "/sampleReports_out");
 
-      assertEquals("Files from sourcefolder do not correspond to files in the destinationFolder",
-            sourceFolder.listFiles().length, destinationFolder.listFiles().length);
-      assertAllFilesAreCompiled(sourceFolder, destinationFolder);
+		getAndExecuteMojo(pluginPom);
 
-   }
+		assertEquals("Files from sourcefolder do not correspond to files in the destinationFolder",
+				sourceFolder.listFiles().length, destinationFolder.listFiles().length);
+		assertAllFilesAreCompiled(sourceFolder, destinationFolder);
 
-   private void getAndExecuteMojo(String pluginPom) throws Exception, MojoExecutionException {
-      JasperReporter mojo = (JasperReporter) lookupMojo("jasper", pluginPom);
-      assertNotNull(mojo);
-      mojo.execute();
-   }
+	}
 
-   /**
-    * Create the source and destination folder. If the destination folder already exsist is shall be
-    * deleted. Otherwise the tests can't run properly.
-    */
-   private void setupSourceAndDestinationFolder(String sourceFolderName, String destinationFolderName) 
-         throws IOException {
-      sourceFolder = new File(getBasedir(), TARGET_EXAMPLE_FOLDER + sourceFolderName);
-      destinationFolder = new File(getBasedir(), TARGET_EXAMPLE_OUT_FOLDER + destinationFolderName);
-      if (destinationFolder.exists()) {
-         FileUtils.deleteDirectory(destinationFolder);         
-      }
-      assertTrue("Source folder doesn't exist: " + sourceFolder.getAbsolutePath(), sourceFolder.exists());
-      assertFalse("Destination folder shouldn't exist", destinationFolder.exists());
-   }
+	private void getAndExecuteMojo(String pluginPom) throws Exception, MojoExecutionException {
+		JasperReporter mojo = (JasperReporter) lookupMojo("jasper", pluginPom);
+		assertNotNull(mojo);
+		mojo.execute();
+	}
 
-   /**
-    * For this method to work all files need to be in one folder. The could be enhanced later to also search
-    * all subfolders.
-    */
-   private void assertAllFilesAreCompiled(File sourceFolder, File destinationFolder) {
-      assertTrue("Source folder is not a directory", sourceFolder.isDirectory());
-      assertTrue("Destination is not a directory", destinationFolder.isDirectory());
-      Set<String> filenames = new HashSet<String>();
-      for (File file : sourceFolder.listFiles()) {
-         if (file.isFile()) {
-            filenames.add(getNameWithoutSuffix(file, ".jrxml"));
-         }
-      }
-      for (File file : destinationFolder.listFiles()) {
-         if (file.isFile()) {
-            filenames.remove(getNameWithoutSuffix(file, ".jasper"));
-         }
-      }
-      assertTrue("Files from sourcefolder do not correspond to files in the destinationFolder", filenames.isEmpty());
-   }
+	/**
+	 * Create the source and destination folder. If the destination folder already exsist is shall
+	 * be deleted. Otherwise the tests can't run properly.
+	 */
+	private void setupSourceAndDestinationFolder(String sourceFolderName, String destinationFolderName)
+			throws IOException {
+		sourceFolder = new File(getBasedir(), TARGET_EXAMPLE_FOLDER + sourceFolderName);
+		destinationFolder = new File(getBasedir(), TARGET_EXAMPLE_OUT_FOLDER + destinationFolderName);
+		if (destinationFolder.exists()) {
+			FileUtils.deleteDirectory(destinationFolder);
+		}
+		assertTrue("Source folder doesn't exist: " + sourceFolder.getAbsolutePath(), sourceFolder.exists());
+		assertFalse("Destination folder shouldn't exist", destinationFolder.exists());
+	}
 
-   private String getNameWithoutSuffix(File file, String suffix) {
-      return file.getName().substring(0, file.getName().indexOf(suffix));
-   }
+	/**
+	 * For this method to work all files need to be in one folder. The could be enhanced later to
+	 * also search all subfolders.
+	 */
+	private void assertAllFilesAreCompiled(File sourceFolder, File destinationFolder) {
+		assertTrue("Source folder is not a directory", sourceFolder.isDirectory());
+		assertTrue("Destination is not a directory", destinationFolder.isDirectory());
+		Set<String> filenames = new HashSet<String>();
+		for (File file : sourceFolder.listFiles()) {
+			if (file.isFile()) {
+				filenames.add(getNameWithoutSuffix(file, ".jrxml"));
+			}
+		}
+		for (File file : destinationFolder.listFiles()) {
+			if (file.isFile()) {
+				filenames.remove(getNameWithoutSuffix(file, ".jasper"));
+			}
+		}
+		assertTrue("Files from sourcefolder do not correspond to files in the destinationFolder", filenames.isEmpty());
+	}
 
-   /**
-    * Test that an invalid Jasper file should stop the build completely by
-    * throwing an {@link MojoExecutionException}.
-    * 
-    * @throws Exception When an unexpected error occurs.
-    */
-   public void testInvalidFilesStopBuild() throws Exception {
-      setupSourceAndDestinationFolder("/brokenReports", "/brokenReports_out");
-      try {
-         getAndExecuteMojo(getBasedir() + "/src/test/resources/testBrokenReportsPom.xml");
-         fail("An exception should have been thrown");
-      } catch (MojoExecutionException e) {
-         assertEquals(JasperReporter.ERROR_JRE_COMPILE_ERROR, e.getMessage());
-      }
-   }
+	private String getNameWithoutSuffix(File file, String suffix) {
+		return file.getName()
+			.substring(0, file.getName()
+				.indexOf(suffix));
+	}
 
-   /**
-    * Test that all files with an invalid suffix are not compiled.
-    * 
-    * @throws Exception When an unexpected error occurs.
-    */
-   public void testWrongSuffixDoesntCompile() throws Exception {
-      setupSourceAndDestinationFolder("/wrongExtensions", "/wrongExtensions_out");
-      getAndExecuteMojo(getBasedir() + "/src/test/resources/testWrongExtensionsPom.xml");
-      assertTrue("Output folder should be empty", destinationFolder.list().length == 0);
-   }
+	/**
+	 * Test that an invalid Jasper file should stop the build completely by throwing an
+	 * {@link MojoExecutionException}.
+	 * 
+	 * @throws Exception
+	 *             When an unexpected error occurs.
+	 */
+	public void testInvalidFilesStopBuild() throws Exception {
+		setupSourceAndDestinationFolder("/brokenReports", "/brokenReports_out");
+		try {
+			getAndExecuteMojo(getBasedir() + "/src/test/resources/testBrokenReportsPom.xml");
+			fail("An exception should have been thrown");
+		}
+		catch (MojoExecutionException e) {
+			assertEquals(JasperReporter.ERROR_JRE_COMPILE_ERROR, e.getMessage());
+		}
+	}
 
-   /**
-    * Test that an empty folder doesn't create errors but just does nothing.
-    * 
-    * @throws Exception When an unexpected error occurs.
-    */
-   public void testEmptyDoesNothing() throws Exception {
-      createTheEmptyFolderIfItDoesntExist();
-      setupSourceAndDestinationFolder("/emptyFolder", "/emptyFolder_out");
-      getAndExecuteMojo(getBasedir() + "/src/test/resources/testEmptyFolderPom.xml");
-      assertTrue("Output folder should be empty", destinationFolder.list().length == 0);
-   }
+	/**
+	 * Test that all files with an invalid suffix are not compiled.
+	 * 
+	 * @throws Exception
+	 *             When an unexpected error occurs.
+	 */
+	public void testWrongSuffixDoesntCompile() throws Exception {
+		setupSourceAndDestinationFolder("/wrongExtensions", "/wrongExtensions_out");
+		getAndExecuteMojo(getBasedir() + "/src/test/resources/testWrongExtensionsPom.xml");
+		assertTrue("Output folder should be empty", destinationFolder.list().length == 0);
+	}
 
-   /**
-    * The empty folder we test on is not transported by Git. We therefor have to
-    * create it manually to do the test.
-    */
-   private void createTheEmptyFolderIfItDoesntExist() {
-      sourceFolder = new File(getBasedir(), TARGET_EXAMPLE_FOLDER + "/emptyFolder");
-      if (!sourceFolder.exists()) {
-         sourceFolder.mkdir();
-      }
-   }
+	/**
+	 * Test that an empty folder doesn't create errors but just does nothing.
+	 * 
+	 * @throws Exception
+	 *             When an unexpected error occurs.
+	 */
+	public void testEmptyDoesNothing() throws Exception {
+		createTheEmptyFolderIfItDoesntExist();
+		setupSourceAndDestinationFolder("/emptyFolder", "/emptyFolder_out");
+		getAndExecuteMojo(getBasedir() + "/src/test/resources/testEmptyFolderPom.xml");
+		assertTrue("Output folder should be empty", destinationFolder.list().length == 0);
+	}
 
-   /**
-    * Test that the folder structure of the output is the same as the folder structure of the input.
-    * @throws Exception When an unexpected error occurs.
-    */
-   public void testFolderStructure() throws Exception {
-      setupSourceAndDestinationFolder("/folderStructure", "/folderStructure_out");
-      getAndExecuteMojo(getBasedir() + "/src/test/resources/testFolderStructurePom.xml");
-      Set<String> filenames = detectFolderStructure(destinationFolder);
-      String relativePath = destinationFolder.getAbsolutePath() + '/';
-      String fileMissing = "A file in the folderstructure is missing";
-      assertTrue(fileMissing, filenames.remove(new File(relativePath + "LandscapeReport.jasper").getAbsolutePath()));
-      assertTrue(fileMissing, filenames.remove(new File(relativePath + "level.1/level.2.1/LateOrdersReport.jasper").getAbsolutePath()));
-      assertTrue(fileMissing, filenames.remove(new File(relativePath + "level.1/level.2.2/MasterReport.jasper").getAbsolutePath()));
-      assertTrue(fileMissing, filenames.remove(new File(relativePath + "level.1/level.2.2/Level.3/LineChartReport.jasper").getAbsolutePath()));
-      assertTrue("There were more files found then expected", filenames.isEmpty());
-   }
+	/**
+	 * The empty folder we test on is not transported by Git. We therefor have to create it manually
+	 * to do the test.
+	 */
+	private void createTheEmptyFolderIfItDoesntExist() {
+		sourceFolder = new File(getBasedir(), TARGET_EXAMPLE_FOLDER + "/emptyFolder");
+		if (!sourceFolder.exists()) {
+			sourceFolder.mkdir();
+		}
+	}
 
-   private Set<String> detectFolderStructure(File folderToSearch) {
-      Set<String> set = new HashSet<String>();
-      for (File f : folderToSearch.listFiles()) {
-         if (f.isDirectory()) {
-            set.addAll(detectFolderStructure(f));
-         } else {
-            set.add(f.getAbsolutePath());
-         }
-      }
-      return set;
-   }
+	/**
+	 * Test that the folder structure of the output is the same as the folder structure of the
+	 * input.
+	 * 
+	 * @throws Exception
+	 *             When an unexpected error occurs.
+	 */
+	public void testFolderStructure() throws Exception {
+		setupSourceAndDestinationFolder("/folderStructure", "/folderStructure_out");
+		getAndExecuteMojo(getBasedir() + "/src/test/resources/testFolderStructurePom.xml");
+		Set<String> filenames = detectFolderStructure(destinationFolder);
+		String relativePath = destinationFolder.getAbsolutePath() + '/';
+		String fileMissing = "A file in the folderstructure is missing";
+		assertTrue(fileMissing, filenames.remove(new File(relativePath + "LandscapeReport.jasper").getAbsolutePath()));
+		assertTrue(
+				fileMissing,
+				filenames.remove(new File(relativePath + "level.1/level.2.1/LateOrdersReport.jasper").getAbsolutePath()));
+		assertTrue(fileMissing,
+				filenames.remove(new File(relativePath + "level.1/level.2.2/MasterReport.jasper").getAbsolutePath()));
+		assertTrue(
+				fileMissing,
+				filenames.remove(new File(relativePath + "level.1/level.2.2/Level.3/LineChartReport.jasper").getAbsolutePath()));
+		assertTrue("There were more files found then expected", filenames.isEmpty());
+	}
 
-   
+	private Set<String> detectFolderStructure(File folderToSearch) {
+		Set<String> set = new HashSet<String>();
+		for (File f : folderToSearch.listFiles()) {
+			if (f.isDirectory()) {
+				set.addAll(detectFolderStructure(f));
+			}
+			else {
+				set.add(f.getAbsolutePath());
+			}
+		}
+		return set;
+	}
 
 }

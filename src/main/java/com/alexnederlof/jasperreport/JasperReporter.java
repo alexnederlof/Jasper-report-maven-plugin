@@ -1,20 +1,14 @@
 package com.alexnederlof.jasperreport;
 
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with this
- * work for additional information regarding copyright ownership. The ASF
- * licenses this file to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * Licensed to the Apache Software Foundation (ASF) under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for additional information regarding
+ * copyright ownership. The ASF licenses this file to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License. You may obtain a
+ * copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable
+ * law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
+ * for the specific language governing permissions and limitations under the License.
  */
 
 import java.io.File;
@@ -36,21 +30,21 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 
 /**
- * This plugin compiles jasper source files to the target folder. While doing
- * so, it keeps the folder structure in tact.
+ * This plugin compiles jasper source files to the target folder. While doing so, it keeps the
+ * folder structure in tact.
  * 
  * @goal jasper
  * @phase process-resources
  */
 public class JasperReporter extends AbstractMojo {
 
-	static final String ERROR_JRE_COMPILE_ERROR = "Some Jasper reports could not be compiled. See log above for details.";
+	static final String ERROR_JRE_COMPILE_ERROR =
+			"Some Jasper reports could not be compiled. See log above for details.";
 
 	/**
 	 * This is the java compiler used
 	 * 
-	 * @parameter 
-	 *            default-value="net.sf.jasperreports.engine.design.JRJdtCompiler"
+	 * @parameter default-value="net.sf.jasperreports.engine.design.JRJdtCompiler"
 	 * @required
 	 */
 	private String compiler;
@@ -70,16 +64,16 @@ public class JasperReporter extends AbstractMojo {
 	private File sourceDirectory;
 
 	/**
-	 * The extension of the source files to look for. Finds files with a .jrxml
-	 * extension by default.
+	 * The extension of the source files to look for. Finds files with a .jrxml extension by
+	 * default.
 	 * 
 	 * @parameter default-value=".jrxml"
 	 */
 	private String sourceFileExt;
 
 	/**
-	 * The extension of the compiled report files. Creates files with a .jasper
-	 * extension by default.
+	 * The extension of the compiled report files. Creates files with a .jasper extension by
+	 * default.
 	 * 
 	 * @parameter default-value=".jasper"
 	 */
@@ -93,17 +87,17 @@ public class JasperReporter extends AbstractMojo {
 	private boolean xmlValidation;
 
 	/**
-	 * If verbose is on the plug-in will report which reports it is compiling and
-	 * which files are being skipped.
+	 * If verbose is on the plug-in will report which reports it is compiling and which files are
+	 * being skipped.
 	 * 
 	 * @parameter default-value="false"
 	 */
 	private boolean verbose;
 
 	/**
-	 * The number of threads the reporting will use. Default is 4 which is good
-	 * for a lot of reports on a hard drive (in stead of SSD). If you only have a
-	 * few, or if you have SSD, it might be faster to set it to 2.
+	 * The number of threads the reporting will use. Default is 4 which is good for a lot of reports
+	 * on a hard drive (in stead of SSD). If you only have a few, or if you have SSD, it might be
+	 * faster to set it to 2.
 	 * 
 	 * @parameter default-value=4
 	 */
@@ -111,7 +105,8 @@ public class JasperReporter extends AbstractMojo {
 
 	private Log log;
 
-	public JasperReporter() {}
+	public JasperReporter() {
+	}
 
 	@Override
 	public void execute() throws MojoExecutionException {
@@ -150,8 +145,8 @@ public class JasperReporter extends AbstractMojo {
 	}
 
 	/**
-	 * Check if the output directory exist and is writable. If not, try to create
-	 * an output dir and see if that is writable.
+	 * Check if the output directory exist and is writable. If not, try to create an output dir and
+	 * see if that is writable.
 	 * 
 	 * @param outputDirectory
 	 * @throws MojoExecutionException
@@ -160,7 +155,8 @@ public class JasperReporter extends AbstractMojo {
 		if (outputDirectory.exists()) {
 			if (outputDirectory.canWrite()) {
 				return;
-			} else {
+			}
+			else {
 				throw new MojoExecutionException("The output dir exists but was not writable. "
 						+ "Try running maven with the 'clean' goal.");
 			}
@@ -174,16 +170,17 @@ public class JasperReporter extends AbstractMojo {
 
 	private void configureJasper() {
 		DefaultJasperReportsContext jasperReportsContext = DefaultJasperReportsContext.getInstance();
-		jasperReportsContext.setProperty(JRReportSaxParserFactory.COMPILER_XML_VALIDATION, String.valueOf(xmlValidation));
-		jasperReportsContext.setProperty(JRCompiler.COMPILER_PREFIX, compiler == null ?
-				JRJdtCompiler.class.getName() : compiler);
+		jasperReportsContext.setProperty(JRReportSaxParserFactory.COMPILER_XML_VALIDATION,
+				String.valueOf(xmlValidation));
+		jasperReportsContext.setProperty(JRCompiler.COMPILER_PREFIX, compiler == null ? JRJdtCompiler.class.getName()
+				: compiler);
 		jasperReportsContext.setProperty(JRCompiler.COMPILER_KEEP_JAVA_FILE, Boolean.FALSE.toString());
 	}
 
 	private void checkIfOutpuCanBeCreated() throws MojoExecutionException {
 		if (!outputDirectory.mkdirs()) {
-			throw new MojoExecutionException(this, "Output folder could not be created",
-					"Outputfolder " + outputDirectory.getAbsolutePath() + " is not a folder");
+			throw new MojoExecutionException(this, "Output folder could not be created", "Outputfolder "
+					+ outputDirectory.getAbsolutePath() + " is not a folder");
 		}
 	}
 
@@ -206,10 +203,13 @@ public class JasperReporter extends AbstractMojo {
 	private void generateTasks(File destinationDirectory, List<CompileTask> tasks, File f) {
 		if (f.isDirectory()) {
 			tasks.addAll(generateTasks(f, createNewDest(f, destinationDirectory)));
-		} else { // It is a file
-			if (f.getName().endsWith(sourceFileExt)) {
+		}
+		else { // It is a file
+			if (f.getName()
+				.endsWith(sourceFileExt)) {
 				tasks.add(new CompileTask(f, destinationDirectory, sourceFileExt, outputFileExt, log, verbose));
-			} else if (verbose) {
+			}
+			else if (verbose) {
 				log.info("Skipped " + f.getName() + " because it doesnt have the extension " + sourceFileExt);
 			}
 		}
@@ -224,17 +224,21 @@ public class JasperReporter extends AbstractMojo {
 	private void executeTasks(List<CompileTask> tasks) throws MojoExecutionException {
 		try {
 			long t1 = System.currentTimeMillis();
-			List<Future<Void>> output = Executors.newFixedThreadPool(numberOfThreads).invokeAll(tasks);
+			List<Future<Void>> output = Executors.newFixedThreadPool(numberOfThreads)
+				.invokeAll(tasks);
 			long time = (System.currentTimeMillis() - t1);
 			getLog().info("Generated " + output.size() + " jasper reports in " + (time / 1000.0) + " seconds");
 			checkForExceptions(output);
-		} catch (InterruptedException e) {
+		}
+		catch (InterruptedException e) {
 			log.error("Failed to compile Japser reports: Interrupted!", e);
 			throw new MojoExecutionException("Error while compiling Jasper reports", e);
-		} catch (ExecutionException e) {
+		}
+		catch (ExecutionException e) {
 			if (e.getCause() instanceof JRException) {
 				throw new MojoExecutionException(ERROR_JRE_COMPILE_ERROR, e);
-			} else {
+			}
+			else {
 				throw new MojoExecutionException("Error while compiling Jasper reports", e);
 			}
 		}
