@@ -54,6 +54,3 @@ If you want to pass any Jasper options to the compiler you can do so by adding t
             </additionalProperties>
 		</configuration>
 	</plugin>
-	
-	
-Other parameters you can set:
