@@ -12,13 +12,26 @@ package com.alexnederlof.jasperreport;
  */
 
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import net.sf.jasperreports.engine.DefaultJasperReportsContext;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.codehaus.plexus.util.FileUtils;
+
+import com.google.common.io.NullOutputStream;
 
 /**
  * Test the report generation.
@@ -38,10 +51,6 @@ public class JasperReportTest extends AbstractMojoTestCase {
 		assertTrue("The folder to copy the examples from doesn't exist", examplesFolder.exists());
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
 
 	/**
 	 * Test the normal generation of Jasper reports. The files are retrieved from the official
@@ -60,6 +69,75 @@ public class JasperReportTest extends AbstractMojoTestCase {
 		assertEquals("Files from sourcefolder do not correspond to files in the destinationFolder",
 				sourceFolder.listFiles().length, destinationFolder.listFiles().length);
 		assertAllFilesAreCompiled(sourceFolder, destinationFolder);
+
+	}
+
+	/**
+	 * Test the normal generation of Jasper reports with additional properties. The files are
+	 * retrieved from the official jasper examples folder. No errors or warnings should occur.
+	 * 
+	 * @throws Exception
+	 *             When an unexpexted error occures.
+	 */
+	public void testGivenAdditionalPropertiesAreSetWhenTestingValidReportGenerationExpectNoErrorOnCompilation()
+			throws Exception {
+		String pluginPom = getBasedir() + "/src/test/resources/testSampleReportsWithAdditionalPropertiesPom.xml";
+		setupSourceAndDestinationFolder("/sampleReports", "/sampleReports_out");
+
+		getAndExecuteMojo(pluginPom);
+		String defaultPdfFontName = DefaultJasperReportsContext.getInstance()
+			.getProperty("net.sf.jasperreports.default.pdf.font.name");
+		String pdfEmbeddedValue = DefaultJasperReportsContext.getInstance()
+			.getProperty("net.sf.jasperreports.default.pdf.embedded");
+
+		assertEquals("Files from sourcefolder do not correspond to files in the destinationFolder",
+				sourceFolder.listFiles().length, destinationFolder.listFiles().length);
+		assertAllFilesAreCompiled(sourceFolder, destinationFolder);
+		assertTrue(defaultPdfFontName != null);
+		assertTrue("default pdf font name has not been set properly", defaultPdfFontName.compareTo("Courier") == 0);
+		assertTrue("net.sf.jasperreports.default.pdf.embedded has not been set properly",
+				pdfEmbeddedValue.compareTo("true") == 0);
+	}
+
+	public void testGivenAdditionalPropertiesAreSetWhenTestingValidReportGenerationAndExportToPdfExpectNoErrors()
+			throws Exception {
+		// compile reports with modified default font property first
+		testGivenAdditionalPropertiesAreSetWhenTestingValidReportGenerationExpectNoErrorOnCompilation();
+
+		// now based on the templates, create PDF's
+		assertTrue("Destination is not a directory", destinationFolder.isDirectory());
+
+		List<File> testFiles = Arrays.asList(destinationFolder.listFiles(new FileFilter() {
+			@Override
+			public boolean accept(File pathname) {
+				return pathname.toString()
+					.contains("PlainTextReportWithDefaultFontReport");
+			}
+		}));
+
+		if (testFiles.size() != 1) {
+			fail("Expected exactly one testfile to be found in directory");
+		}
+
+		createPdf("PlainTextReportWithDefaultFontReport.jasper");
+
+	}
+
+	private void createPdf(String filename) {
+		File file = new File(destinationFolder.getPath() + "/" + filename);
+		try {
+			JasperPrint print = JasperFillManager.fillReport(new FileInputStream(file), new HashMap<String, Object>());
+			JasperExportManager.exportReportToPdfStream(print, new NullOutputStream());
+		}
+		catch (IOException e) {
+			fail("Unable to create exportfile: Errormessage:" + e.getMessage());
+		}
+		catch (JRException e) {
+			fail("Unable to create pdf: Errormessage:" + e.getMessage());
+		}
+		catch (IllegalArgumentException e) {
+			fail("Unable to create pdf: IllegalArgumentException:" + e.getMessage());
+		}
 
 	}
 

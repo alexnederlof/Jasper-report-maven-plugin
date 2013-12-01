@@ -14,12 +14,14 @@ package com.alexnederlof.jasperreport;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRPropertiesUtil;
 import net.sf.jasperreports.engine.design.JRCompiler;
 import net.sf.jasperreports.engine.design.JRJdtCompiler;
 import net.sf.jasperreports.engine.xml.JRReportSaxParserFactory;
@@ -103,6 +105,27 @@ public class JasperReporter extends AbstractMojo {
 	 */
 	private int numberOfThreads;
 
+	/**
+	 * Use this parameter to add additional properties to the Jasper compiler. For example. 
+	 * 
+	 * <pre>
+	 * {@code
+	 * <configuration>
+	 * 	... 
+	 * 		<additionalProperties>
+	 * 			<net.sf.jasperreports.awt.ignore.missing.font>true
+	 *			</net.sf.jasperreports.awt.ignore.missing.font>
+	 *          <net.sf.jasperreports.default.pdf.font.name>Courier</net.sf.jasperreports.default.pdf.font.name>
+	 *          <net.sf.jasperreports.default.pdf.encoding>UTF-8</net.sf.jasperreports.default.pdf.encoding>
+	 *          <net.sf.jasperreports.default.pdf.embedded>true</net.sf.jasperreports.default.pdf.embedded>
+	 		</additionalProperties>
+	 * </configuration>
+	 * }
+	 * </pre>
+	 * @parameter
+	 */
+	private Map<String, String> additionalProperties;
+
 	private Log log;
 
 	public JasperReporter() {
@@ -139,6 +162,7 @@ public class JasperReporter extends AbstractMojo {
 		log.info("Sourcedir=" + sourceDirectory.getAbsolutePath());
 		log.info("Output ext=" + outputFileExt);
 		log.info("Source ext=" + sourceFileExt);
+		log.info("Addition properties=" + additionalProperties);
 		log.info("XML Validation=" + xmlValidation);
 		log.info("JasperReports Compiler=" + compiler);
 		log.info("Number of threads:" + numberOfThreads);
@@ -175,6 +199,16 @@ public class JasperReporter extends AbstractMojo {
 		jasperReportsContext.setProperty(JRCompiler.COMPILER_PREFIX, compiler == null ? JRJdtCompiler.class.getName()
 				: compiler);
 		jasperReportsContext.setProperty(JRCompiler.COMPILER_KEEP_JAVA_FILE, Boolean.FALSE.toString());
+
+		if (additionalProperties != null) {
+			configureAdditionalProperties(JRPropertiesUtil.getInstance(jasperReportsContext));
+		}
+	}
+
+	private void configureAdditionalProperties(JRPropertiesUtil propertiesUtil) {
+		for (Map.Entry<String, String> additionalProperty : additionalProperties.entrySet()) {
+			propertiesUtil.setProperty(additionalProperty.getKey(), additionalProperty.getValue());
+		}
 	}
 
 	private void checkIfOutpuCanBeCreated() throws MojoExecutionException {
