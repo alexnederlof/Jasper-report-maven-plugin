@@ -49,7 +49,6 @@ public class CompileTask implements Callable<Void> {
 	 */
 	public CompileTask(File source, File destFolder, String sourceExtension, String outExtension, Log log,
 			boolean verbose) {
-		super();
 		this.source = source;
 		this.destFolder = destFolder;
 		this.sourceExtension = sourceExtension;
