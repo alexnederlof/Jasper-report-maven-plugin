@@ -255,7 +255,7 @@ public class JasperReportTest extends AbstractMojoTestCase {
 		getAndExecuteMojo(getBasedir() + "/src/test/resources/testFolderStructurePom.xml");
 		Set<String> filenames = detectFolderStructure(destinationFolder);
 		String relativePath = destinationFolder.getAbsolutePath() + '/';
-		String fileMissing = "A file in the folderstructure is missing";
+		String fileMissing = "A file in the folderStructure is missing";
 		assertTrue(fileMissing, filenames.remove(new File(relativePath + "LandscapeReport.jasper").getAbsolutePath()));
 		assertTrue(
 				fileMissing,
