@@ -13,6 +13,8 @@ package com.alexnederlof.jasperreport;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,9 +44,10 @@ import org.codehaus.plexus.compiler.util.scan.mapping.SuffixMapping;
 /**
  * This plugin compiles jasper source files to the target folder. While doing so, it keeps the
  * folder structure in tact.
- * 
+ *
  * @goal jasper
  * @phase process-resources
+ * @requiresDependencyResolution compile
  */
 public class JasperReporter extends AbstractMojo {
 
@@ -61,14 +64,14 @@ public class JasperReporter extends AbstractMojo {
 
 	/**
 	 * This is where the .jasper files are written.
-	 * 
+	 *
 	 * @parameter property="${project.build.outputDirectory}/jasper"
 	 */
 	private File outputDirectory;
 
 	/**
 	 * This is where the xml report design files should be.
-	 * 
+	 *
 	 * @parameter default-value="src/main/jasperreports"
 	 */
 	private File sourceDirectory;
@@ -76,7 +79,7 @@ public class JasperReporter extends AbstractMojo {
 	/**
 	 * The extension of the source files to look for. Finds files with a .jrxml extension by
 	 * default.
-	 * 
+	 *
 	 * @parameter default-value=".jrxml"
 	 */
 	private String sourceFileExt;
@@ -84,14 +87,14 @@ public class JasperReporter extends AbstractMojo {
 	/**
 	 * The extension of the compiled report files. Creates files with a .jasper extension by
 	 * default.
-	 * 
+	 *
 	 * @parameter default-value=".jasper"
 	 */
 	private String outputFileExt;
 
 	/**
 	 * Check the source files before compiling. Default value is true.
-	 * 
+	 *
 	 * @parameter default-value="true"
 	 */
 	private boolean xmlValidation;
@@ -99,7 +102,7 @@ public class JasperReporter extends AbstractMojo {
 	/**
 	 * If verbose is on the plug-in will report which reports it is compiling and which files are
 	 * being skipped.
-	 * 
+	 *
 	 * @parameter default-value="false"
 	 */
 	private boolean verbose;
@@ -108,18 +111,23 @@ public class JasperReporter extends AbstractMojo {
 	 * The number of threads the reporting will use. Default is 4 which is good for a lot of reports
 	 * on a hard drive (in stead of SSD). If you only have a few, or if you have SSD, it might be
 	 * faster to set it to 2.
-	 * 
+	 *
 	 * @parameter default-value=4
 	 */
 	private int numberOfThreads;
 
-	/**
-	 * Use this parameter to add additional properties to the Jasper compiler. For example. 
-	 * 
+    /**
+     * @parameter property="project.compileClasspathElements"
+     */
+    private List<String> classpathElements;
+
+    /**
+	 * Use this parameter to add additional properties to the Jasper compiler. For example.
+	 *
 	 * <pre>
 	 * {@code
 	 * <configuration>
-	 * 	... 
+	 * 	...
 	 * 		<additionalProperties>
 	 * 			<net.sf.jasperreports.awt.ignore.missing.font>true
 	 *			</net.sf.jasperreports.awt.ignore.missing.font>
@@ -162,8 +170,16 @@ public class JasperReporter extends AbstractMojo {
                 return;
             }
 
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            Thread.currentThread().setContextClassLoader(getClassLoader(classLoader));
+            try {
                 configureJasper();
                 executeTasks(tasks);
+            } finally {
+                if (classLoader != null) {
+                    Thread.currentThread().setContextClassLoader(classLoader);
+                }
+            }
         }
 	}
 
@@ -236,6 +252,22 @@ public class JasperReporter extends AbstractMojo {
 
 	}
 
+    private ClassLoader getClassLoader(ClassLoader classLoader) throws MojoExecutionException {
+        List<URL> classpath = new ArrayList<URL>();
+
+        for (String element : classpathElements) {
+            try {
+                File f = new File(element);
+                classpath.add(f.toURI().toURL());
+                log.debug("Added to classpath " + element);
+            } catch (Exception e) {
+                throw new MojoExecutionException("Error setting classpath " + element + " " + e.getMessage());
+            }
+        }
+
+        URL[] urls = classpath.toArray(new URL[classpath.size()]);
+        return new URLClassLoader(urls, classLoader);
+    }
 
     private void configureAdditionalProperties(JRPropertiesUtil propertiesUtil) {
 		for (Map.Entry<String, String> additionalProperty : additionalProperties.entrySet()) {
