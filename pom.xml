@@ -10,7 +10,7 @@
 	</parent>
 
 	<packaging>maven-plugin</packaging>
-	<version>1.8-SNAPSHOT</version>
+	<version>1.8</version>
 	<name>jasperreport-plugin</name>
 	<description>A Jasper compiler plugin</description>
 	<url>http://github.com/alexnederlof/Jasper-report-maven-plugin</url>
@@ -31,7 +31,7 @@
 		<connection>scm:git:git@github.com:alexnederlof/Jasper-report-maven-plugin.git</connection>
 		<url>http://github.com/alexnederlof/Jasper-report-maven-plugin</url>
 		<developerConnection>scm:git:git@github.com:alexnederlof/Jasper-report-maven-plugin.git</developerConnection>
-		<tag>HEAD</tag>
+		<tag>jasperreports-plugin-1.8</tag>
 	</scm>
 
 	<developers>
