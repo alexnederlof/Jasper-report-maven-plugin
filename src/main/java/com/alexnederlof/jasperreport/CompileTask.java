@@ -14,6 +14,7 @@ package com.alexnederlof.jasperreport;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.concurrent.Callable;
 
 import net.sf.jasperreports.engine.JRException;
@@ -27,76 +28,59 @@ import org.apache.maven.plugin.logging.Log;
 public class CompileTask implements Callable<Void> {
 
 	private final File source;
-	private final File destFolder;
-	private final String sourceExtension;
-	private final String outExtension;
+	private final File destination;
 	private final Log log;
 	private final boolean verbose;
 
 	/**
 	 * @param source
 	 *            The source file.
-	 * @param destFolder
-	 *            The destination folder.
-	 * @param sourceExtension
-	 *            The source extension.
-	 * @param outExtension
-	 *            The output extension.
+	 * @param destination
+	 *            The destination file.
 	 * @param log
 	 *            The logger.
 	 * @param verbose
 	 *            If the output should be verbose.
 	 */
-	public CompileTask(File source, File destFolder, String sourceExtension, String outExtension, Log log,
-			boolean verbose) {
+	public CompileTask(File source, File destination, Log log, boolean verbose) {
 		super();
 		this.source = source;
-		this.destFolder = destFolder;
-		this.sourceExtension = sourceExtension;
-		this.outExtension = outExtension;
+		this.destination = destination;
 		this.log = log;
 		this.verbose = verbose;
 	}
 
 	/**
 	 * Compile the source file. If the source file doesn't have the right extension, it is skipped.
-	 * 
+	 *
 	 * @return Debug output of the compile action.
 	 * @throws Exception
 	 *             when anything goes wrong while compiling.
 	 */
 	@Override
 	public Void call() throws Exception {
-		File out = null;
+		OutputStream out = null;
 		try {
-			if (source.getAbsolutePath()
-				.endsWith(sourceExtension)) {
-				String newFilename = getNewFilename();
-				out = new File(destFolder, newFilename);
-				JasperCompileManager.compileReportToStream(new FileInputStream(source), new FileOutputStream(out));
-				if (verbose) {
-					log.info("Compiling " + newFilename);
-				}
+	        out =  new FileOutputStream(destination);
+			JasperCompileManager.compileReportToStream(new FileInputStream(source), out);
+			if (verbose) {
+				log.info("Compiling " + source.getName());
 			}
 		}
 		catch (Exception e) {
-			cleanUpAndThrowError(out, e);
+		    if (out != null) {
+		        out.close();
+		    }
+			cleanUpAndThrowError(destination, e);
 		}
 		return null;
 	}
 
 	private void cleanUpAndThrowError(File out, Exception e) throws JRException {
-		log.error("Could not compile " + source.getName(), e);
+		log.error("Could not compile " + source.getName() + " because " + e.getMessage(), e);
 		if (out != null && out.exists()) {
 			out.delete();
 		}
 		throw new JRException("Could not compile " + source.getName(), e);
 	}
-
-	private String getNewFilename() {
-		return source.getName()
-			.substring(0, source.getName()
-				.lastIndexOf(sourceExtension)) + outExtension;
-	}
-
 }

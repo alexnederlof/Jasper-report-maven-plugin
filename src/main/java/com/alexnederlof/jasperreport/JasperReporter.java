@@ -12,9 +12,14 @@ package com.alexnederlof.jasperreport;
  */
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -30,13 +35,19 @@ import org.apache.commons.lang.Validate;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
+import org.codehaus.plexus.compiler.util.scan.InclusionScanException;
+import org.codehaus.plexus.compiler.util.scan.SourceInclusionScanner;
+import org.codehaus.plexus.compiler.util.scan.StaleSourceScanner;
+import org.codehaus.plexus.compiler.util.scan.mapping.SourceMapping;
+import org.codehaus.plexus.compiler.util.scan.mapping.SuffixMapping;
 
 /**
  * This plugin compiles jasper source files to the target folder. While doing so, it keeps the
  * folder structure in tact.
- * 
+ *
  * @goal jasper
  * @phase process-resources
+ * @requiresDependencyResolution compile
  */
 public class JasperReporter extends AbstractMojo {
 
@@ -45,7 +56,7 @@ public class JasperReporter extends AbstractMojo {
 
 	/**
 	 * This is the java compiler used
-	 * 
+	 *
 	 * @parameter default-value="net.sf.jasperreports.engine.design.JRJdtCompiler"
 	 * @required
 	 */
@@ -53,14 +64,14 @@ public class JasperReporter extends AbstractMojo {
 
 	/**
 	 * This is where the .jasper files are written.
-	 * 
+	 *
 	 * @parameter property="${project.build.outputDirectory}/jasper"
 	 */
 	private File outputDirectory;
 
 	/**
 	 * This is where the xml report design files should be.
-	 * 
+	 *
 	 * @parameter default-value="src/main/jasperreports"
 	 */
 	private File sourceDirectory;
@@ -68,7 +79,7 @@ public class JasperReporter extends AbstractMojo {
 	/**
 	 * The extension of the source files to look for. Finds files with a .jrxml extension by
 	 * default.
-	 * 
+	 *
 	 * @parameter default-value=".jrxml"
 	 */
 	private String sourceFileExt;
@@ -76,14 +87,14 @@ public class JasperReporter extends AbstractMojo {
 	/**
 	 * The extension of the compiled report files. Creates files with a .jasper extension by
 	 * default.
-	 * 
+	 *
 	 * @parameter default-value=".jasper"
 	 */
 	private String outputFileExt;
 
 	/**
 	 * Check the source files before compiling. Default value is true.
-	 * 
+	 *
 	 * @parameter default-value="true"
 	 */
 	private boolean xmlValidation;
@@ -91,7 +102,7 @@ public class JasperReporter extends AbstractMojo {
 	/**
 	 * If verbose is on the plug-in will report which reports it is compiling and which files are
 	 * being skipped.
-	 * 
+	 *
 	 * @parameter default-value="false"
 	 */
 	private boolean verbose;
@@ -100,18 +111,23 @@ public class JasperReporter extends AbstractMojo {
 	 * The number of threads the reporting will use. Default is 4 which is good for a lot of reports
 	 * on a hard drive (in stead of SSD). If you only have a few, or if you have SSD, it might be
 	 * faster to set it to 2.
-	 * 
+	 *
 	 * @parameter default-value=4
 	 */
 	private int numberOfThreads;
 
-	/**
-	 * Use this parameter to add additional properties to the Jasper compiler. For example. 
-	 * 
+    /**
+     * @parameter property="project.compileClasspathElements"
+     */
+    private List<String> classpathElements;
+
+    /**
+	 * Use this parameter to add additional properties to the Jasper compiler. For example.
+	 *
 	 * <pre>
 	 * {@code
 	 * <configuration>
-	 * 	... 
+	 * 	...
 	 * 		<additionalProperties>
 	 * 			<net.sf.jasperreports.awt.ignore.missing.font>true
 	 *			</net.sf.jasperreports.awt.ignore.missing.font>
@@ -135,43 +151,74 @@ public class JasperReporter extends AbstractMojo {
 	public void execute() throws MojoExecutionException {
 		log = getLog();
 
-		if (outputDirectory.exists() && outputDirectory.listFiles().length > 0) {
-			log.info("It seems the Jasper reports are already compiled. If you want to re-compile, run maven "
-					+ "with the 'clean' goal.");
-			return;
-		}
 		if (verbose) {
-			logConfiguration(log);
-		}
+            logConfiguration(log);
+        }
+
 		checkOutDirWritable(outputDirectory);
 
-		configureJasper();
+		SourceMapping mapping = new SuffixMapping(sourceFileExt, outputFileExt);
+        Set<File> sources = jxmlFilesToCompile(mapping);
+        if (sources.isEmpty()) {
+            log.info( "Nothing to compile - all Jasper reports are up to date" );
+        } else {
+            log.info( "Compiling " + sources.size() + " Jasper reports design files." );
 
-		List<CompileTask> tasks = generateTasks(sourceDirectory, outputDirectory);
+            List<CompileTask> tasks = generateTasks(sources, mapping);
+            if (tasks.isEmpty()) {
+                log.info("Nothing to compile");
+                return;
+            }
 
-		if (tasks.isEmpty()) {
-			log.info("Nothing to compile");
-			return;
-		}
-		executeTasks(tasks);
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            Thread.currentThread().setContextClassLoader(getClassLoader(classLoader));
+            try {
+                configureJasper();
+                executeTasks(tasks);
+            } finally {
+                if (classLoader != null) {
+                    Thread.currentThread().setContextClassLoader(classLoader);
+                }
+            }
+        }
 	}
+
+	/**
+     * Determines source files to be compiled.
+     *
+     * @param mapping
+     * @return set of jxml files to compile
+     * @throws MojoExecutionException
+     */
+    protected Set<File> jxmlFilesToCompile(SourceMapping mapping) throws MojoExecutionException {
+        Validate.isTrue(sourceDirectory.isDirectory(), sourceDirectory.getName() + " is not a directory");
+
+        try {
+            SourceInclusionScanner scanner = new StaleSourceScanner();
+            scanner.addSourceMapping(mapping);
+            return scanner.getIncludedSources(sourceDirectory, outputDirectory);
+        } catch (InclusionScanException e) {
+            throw new MojoExecutionException("Error scanning source root: \'" + sourceDirectory + "\'.", e);
+        }
+    }
 
 	private void logConfiguration(Log log) {
 		log.info("Generating Jasper reports");
-		log.info("Outputdir=" + outputDirectory.getAbsolutePath());
-		log.info("Sourcedir=" + sourceDirectory.getAbsolutePath());
-		log.info("Output ext=" + outputFileExt);
-		log.info("Source ext=" + sourceFileExt);
-		log.info("Addition properties=" + additionalProperties);
-		log.info("XML Validation=" + xmlValidation);
-		log.info("JasperReports Compiler=" + compiler);
-		log.info("Number of threads:" + numberOfThreads);
+		log.info("Output dir: " + outputDirectory.getAbsolutePath());
+		log.info("Source dir: " + sourceDirectory.getAbsolutePath());
+		log.info("Output ext: " + outputFileExt);
+		log.info("Source ext: " + sourceFileExt);
+		log.info("Addition properties: " + additionalProperties);
+		log.info("XML Validation: " + xmlValidation);
+		log.info("JasperReports Compiler: " + compiler);
+		log.info("Number of threads: " + numberOfThreads);
+		log.info("classpathElements: " + classpathElements);
 	}
 
 	/**
 	 * Check if the output directory exist and is writable. If not, try to create an output dir and
 	 * see if that is writable.
-	 * 
+	 *
 	 * @param outputDirectory
 	 * @throws MojoExecutionException
 	 */
@@ -185,33 +232,51 @@ public class JasperReporter extends AbstractMojo {
 						+ "Try running maven with the 'clean' goal.");
 			}
 		}
-		checkIfOutpuCanBeCreated();
+		checkIfOutputCanBeCreated();
 		checkIfOutputDirIsWritable();
 		if (verbose) {
-			getLog().info("Output dir check OK");
+			log.info("Output dir check OK");
 		}
 	}
 
 	private void configureJasper() {
-		DefaultJasperReportsContext jasperReportsContext = DefaultJasperReportsContext.getInstance();
-		jasperReportsContext.setProperty(JRReportSaxParserFactory.COMPILER_XML_VALIDATION,
-				String.valueOf(xmlValidation));
-		jasperReportsContext.setProperty(JRCompiler.COMPILER_PREFIX, compiler == null ? JRJdtCompiler.class.getName()
-				: compiler);
-		jasperReportsContext.setProperty(JRCompiler.COMPILER_KEEP_JAVA_FILE, Boolean.FALSE.toString());
+		DefaultJasperReportsContext jrContext = DefaultJasperReportsContext.getInstance();
+
+        jrContext.setProperty(JRReportSaxParserFactory.COMPILER_XML_VALIDATION, String.valueOf(xmlValidation));
+		jrContext.setProperty(JRCompiler.COMPILER_PREFIX, compiler == null ? JRJdtCompiler.class.getName() : compiler);
+		jrContext.setProperty(JRCompiler.COMPILER_KEEP_JAVA_FILE, Boolean.FALSE.toString());
 
 		if (additionalProperties != null) {
-			configureAdditionalProperties(JRPropertiesUtil.getInstance(jasperReportsContext));
+			configureAdditionalProperties(JRPropertiesUtil.getInstance(jrContext));
 		}
+
 	}
 
-	private void configureAdditionalProperties(JRPropertiesUtil propertiesUtil) {
+    private ClassLoader getClassLoader(ClassLoader classLoader) throws MojoExecutionException {
+        List<URL> classpath = new ArrayList<URL>();
+		if (classpathElements != null) {
+			for (String element : classpathElements) {
+				try {
+					File f = new File(element);
+					classpath.add(f.toURI().toURL());
+					log.debug("Added to classpath " + element);
+				} catch (Exception e) {
+					throw new MojoExecutionException("Error setting classpath " + element + " " + e.getMessage());
+				}
+			}
+		}
+
+        URL[] urls = classpath.toArray(new URL[classpath.size()]);
+        return new URLClassLoader(urls, classLoader);
+    }
+
+    private void configureAdditionalProperties(JRPropertiesUtil propertiesUtil) {
 		for (Map.Entry<String, String> additionalProperty : additionalProperties.entrySet()) {
 			propertiesUtil.setProperty(additionalProperty.getKey(), additionalProperty.getValue());
 		}
 	}
 
-	private void checkIfOutpuCanBeCreated() throws MojoExecutionException {
+	private void checkIfOutputCanBeCreated() throws MojoExecutionException {
 		if (!outputDirectory.mkdirs()) {
 			throw new MojoExecutionException(this, "Output folder could not be created", "Outputfolder "
 					+ outputDirectory.getAbsolutePath() + " is not a folder");
@@ -225,34 +290,43 @@ public class JasperReporter extends AbstractMojo {
 		}
 	}
 
-	private List<CompileTask> generateTasks(File sourceDirectory, File destinationDirectory) {
-		Validate.isTrue(sourceDirectory.isDirectory(), sourceDirectory.getName() + " is not a directory");
+	private String getRelativePath(String root, File file) throws MojoExecutionException {
+        try {
+            return file.getCanonicalPath().substring(root.length() + 1);
+        } catch (IOException e) {
+            throw new MojoExecutionException("Could not getCanonicalPath from file " + file, e);
+        }
+    }
+
+	private List<CompileTask> generateTasks(Set<File> sources, SourceMapping mapping) throws MojoExecutionException {
 		List<CompileTask> tasks = new LinkedList<CompileTask>();
-		for (File f : sourceDirectory.listFiles()) {
-			generateTasks(destinationDirectory, tasks, f);
-		}
+		try {
+        String root = sourceDirectory.getCanonicalPath();
+
+        for (File src : sources) {
+            String srcName = getRelativePath(root, src);
+            try {
+                File destination = mapping.getTargetFiles(outputDirectory, srcName).iterator().next();
+                createDestination(destination.getParentFile());
+                tasks.add(new CompileTask(src, destination, log, verbose));
+            } catch (InclusionScanException e) {
+                throw new MojoExecutionException("Error compiling report design : " + src, e);
+            }
+        }
+		 } catch (IOException e) {
+	            throw new MojoExecutionException("Could not getCanonicalPath from source directory " + sourceDirectory, e);
+	        }
 		return tasks;
 	}
 
-	private void generateTasks(File destinationDirectory, List<CompileTask> tasks, File f) {
-		if (f.isDirectory()) {
-			tasks.addAll(generateTasks(f, createNewDest(f, destinationDirectory)));
-		}
-		else { // It is a file
-			if (f.getName()
-				.endsWith(sourceFileExt)) {
-				tasks.add(new CompileTask(f, destinationDirectory, sourceFileExt, outputFileExt, log, verbose));
-			}
-			else if (verbose) {
-				log.info("Skipped " + f.getName() + " because it doesnt have the extension " + sourceFileExt);
-			}
-		}
-	}
-
-	private File createNewDest(File origin, File destinationDirectory) {
-		File newDest = new File(destinationDirectory, origin.getName());
-		newDest.mkdir();
-		return newDest;
+	private void createDestination(File destinationDirectory) throws MojoExecutionException {
+        if (!destinationDirectory.exists()) {
+            if (destinationDirectory.mkdirs()) {
+                log.debug("Created directory " + destinationDirectory.getName());
+            } else {
+                throw new MojoExecutionException("Could not create directory " + destinationDirectory.getName() );
+            }
+        }
 	}
 
 	private void executeTasks(List<CompileTask> tasks) throws MojoExecutionException {
@@ -261,7 +335,7 @@ public class JasperReporter extends AbstractMojo {
 			List<Future<Void>> output = Executors.newFixedThreadPool(numberOfThreads)
 				.invokeAll(tasks);
 			long time = (System.currentTimeMillis() - t1);
-			getLog().info("Generated " + output.size() + " jasper reports in " + (time / 1000.0) + " seconds");
+			log.info("Generated " + output.size() + " jasper reports in " + (time / 1000.0) + " seconds");
 			checkForExceptions(output);
 		}
 		catch (InterruptedException e) {
