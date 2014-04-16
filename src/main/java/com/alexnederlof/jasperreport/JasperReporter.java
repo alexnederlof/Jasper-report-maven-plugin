@@ -204,8 +204,8 @@ public class JasperReporter extends AbstractMojo {
 
 	private void logConfiguration(Log log) {
 		log.info("Generating Jasper reports");
-		log.info("Outputdir: " + outputDirectory.getAbsolutePath());
-		log.info("Sourcedir: " + sourceDirectory.getAbsolutePath());
+		log.info("Output dir: " + outputDirectory.getAbsolutePath());
+		log.info("Source dir: " + sourceDirectory.getAbsolutePath());
 		log.info("Output ext: " + outputFileExt);
 		log.info("Source ext: " + sourceFileExt);
 		log.info("Addition properties: " + additionalProperties);
@@ -232,7 +232,7 @@ public class JasperReporter extends AbstractMojo {
 						+ "Try running maven with the 'clean' goal.");
 			}
 		}
-		checkIfOutpuCanBeCreated();
+		checkIfOutputCanBeCreated();
 		checkIfOutputDirIsWritable();
 		if (verbose) {
 			log.info("Output dir check OK");
@@ -254,16 +254,17 @@ public class JasperReporter extends AbstractMojo {
 
     private ClassLoader getClassLoader(ClassLoader classLoader) throws MojoExecutionException {
         List<URL> classpath = new ArrayList<URL>();
-
-        for (String element : classpathElements) {
-            try {
-                File f = new File(element);
-                classpath.add(f.toURI().toURL());
-                log.debug("Added to classpath " + element);
-            } catch (Exception e) {
-                throw new MojoExecutionException("Error setting classpath " + element + " " + e.getMessage());
-            }
-        }
+		if (classpathElements != null) {
+			for (String element : classpathElements) {
+				try {
+					File f = new File(element);
+					classpath.add(f.toURI().toURL());
+					log.debug("Added to classpath " + element);
+				} catch (Exception e) {
+					throw new MojoExecutionException("Error setting classpath " + element + " " + e.getMessage());
+				}
+			}
+		}
 
         URL[] urls = classpath.toArray(new URL[classpath.size()]);
         return new URLClassLoader(urls, classLoader);
@@ -275,7 +276,7 @@ public class JasperReporter extends AbstractMojo {
 		}
 	}
 
-	private void checkIfOutpuCanBeCreated() throws MojoExecutionException {
+	private void checkIfOutputCanBeCreated() throws MojoExecutionException {
 		if (!outputDirectory.mkdirs()) {
 			throw new MojoExecutionException(this, "Output folder could not be created", "Outputfolder "
 					+ outputDirectory.getAbsolutePath() + " is not a folder");
@@ -305,9 +306,9 @@ public class JasperReporter extends AbstractMojo {
         for (File src : sources) {
             String srcName = getRelativePath(root, src);
             try {
-                File dest = mapping.getTargetFiles(outputDirectory, srcName).toArray(new File[]{})[0];
-                createDestination(dest.getParentFile());
-                tasks.add(new CompileTask(src, dest, log, verbose));
+                File destination = mapping.getTargetFiles(outputDirectory, srcName).iterator().next();
+                createDestination(destination.getParentFile());
+                tasks.add(new CompileTask(src, destination, log, verbose));
             } catch (InclusionScanException e) {
                 throw new MojoExecutionException("Error compiling report design : " + src, e);
             }
