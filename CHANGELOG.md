@@ -1,3 +1,7 @@
+# 1.9
+
+- Fixes a bug that required a dependency on Servlet. [#13](https://github.com/alexnederlof/Jasper-report-maven-plugin/issues/13)
+
 # 1.8
 
 - Fixes [#7](https://github.com/alexnederlof/Jasper-report-maven-plugin/issues/7) For each `.jrxml` file search th compiled .jasper if not found or older than source file recompile it.
