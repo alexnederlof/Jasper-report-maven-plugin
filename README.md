@@ -31,7 +31,7 @@ You can use the plugin by adding it to the plug-in section in your pom;
 				<compiler>net.sf.jasperreports.engine.design.JRJdtCompiler</compiler>
 				<sourceDirectory>src/main/jasperreports</sourceDirectory>
 				<outputDirectory>${project.build.directory}/jasper</outputDirectory>
-				<outputFileExt>.jasper</outputFileExt</outputFileExt>
+				<outputFileExt>.jasper</outputFileExt>
 				<xmlValidation>true</xmlValidation>
 				<verbose>false</verbose>
 				<numberOfThreads>4</numberOfThreads>
