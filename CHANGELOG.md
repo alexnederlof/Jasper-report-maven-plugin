@@ -1,3 +1,8 @@
+# 2.0
+
+This release sets Jasper to version 6 and updates some other deps. Also uses the 
+new OSS release system instead of the old OSS parent pom.
+
 # 1.9
 
 - Fixes a bug that required a dependency on Servlet. [#13](https://github.com/alexnederlof/Jasper-report-maven-plugin/issues/13)

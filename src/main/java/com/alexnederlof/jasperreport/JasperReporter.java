@@ -186,9 +186,9 @@ public class JasperReporter extends AbstractMojo {
 	/**
      * Determines source files to be compiled.
      *
-     * @param mapping
+     * @param mapping The source files
      * @return set of jxml files to compile
-     * @throws MojoExecutionException
+     * @throws MojoExecutionException When there's trouble with the input
      */
     protected Set<File> jxmlFilesToCompile(SourceMapping mapping) throws MojoExecutionException {
         Validate.isTrue(sourceDirectory.isDirectory(), sourceDirectory.getName() + " is not a directory");
@@ -219,8 +219,8 @@ public class JasperReporter extends AbstractMojo {
 	 * Check if the output directory exist and is writable. If not, try to create an output dir and
 	 * see if that is writable.
 	 *
-	 * @param outputDirectory
-	 * @throws MojoExecutionException
+	 * @param outputDirectory The dir where the result will be placed
+	 * @throws MojoExecutionException When the output directory is not writable
 	 */
 	private void checkOutDirWritable(File outputDirectory) throws MojoExecutionException {
 		if (outputDirectory.exists()) {
@@ -253,7 +253,7 @@ public class JasperReporter extends AbstractMojo {
 	}
 
     private ClassLoader getClassLoader(ClassLoader classLoader) throws MojoExecutionException {
-        List<URL> classpath = new ArrayList<URL>();
+        List<URL> classpath = new ArrayList<>();
 		if (classpathElements != null) {
 			for (String element : classpathElements) {
 				try {
@@ -299,7 +299,7 @@ public class JasperReporter extends AbstractMojo {
     }
 
 	private List<CompileTask> generateTasks(Set<File> sources, SourceMapping mapping) throws MojoExecutionException {
-		List<CompileTask> tasks = new LinkedList<CompileTask>();
+		List<CompileTask> tasks = new LinkedList<>();
 		try {
         String root = sourceDirectory.getCanonicalPath();
 
