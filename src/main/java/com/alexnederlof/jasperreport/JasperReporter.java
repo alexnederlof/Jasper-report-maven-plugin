@@ -11,6 +11,8 @@ package com.alexnederlof.jasperreport;
  * for the specific language governing permissions and limitations under the License.
  */
 
+import static com.alexnederlof.jasperreport.Version.version;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -24,17 +26,14 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRPropertiesUtil;
-import net.sf.jasperreports.engine.design.JRCompiler;
-import net.sf.jasperreports.engine.design.JRJdtCompiler;
-import net.sf.jasperreports.engine.xml.JRReportSaxParserFactory;
 
 import org.apache.commons.lang.Validate;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.compiler.util.scan.InclusionScanException;
 import org.codehaus.plexus.compiler.util.scan.SourceInclusionScanner;
 import org.codehaus.plexus.compiler.util.scan.StaleSourceScanner;
@@ -50,6 +49,9 @@ import org.codehaus.plexus.compiler.util.scan.mapping.SuffixMapping;
  * @requiresDependencyResolution compile
  */
 public class JasperReporter extends AbstractMojo {
+
+	private static final String JASPERREPORTS_ARTIFACT_ID = "jasperreports";
+	private static final String JASPERREPORTS_GROUP_ID = "net.sf.jasperreports";
 
 	static final String ERROR_JRE_COMPILE_ERROR =
 			"Some Jasper reports could not be compiled. See log above for details.";
@@ -141,6 +143,18 @@ public class JasperReporter extends AbstractMojo {
 	 * @parameter
 	 */
 	private Map<String, String> additionalProperties;
+	
+	/**
+	 * @parameter default-value=';'
+	 */
+	private char pathSeparatorChar;
+
+	/**
+	 * @parameter expression="${project}"
+	 * @required
+	 * @readonly
+	 */
+	private MavenProject project;
 
 	private Log log;
 
@@ -170,17 +184,75 @@ public class JasperReporter extends AbstractMojo {
                 return;
             }
 
+            JasperConfigurator jasperConfigurator = getJasperConfigurator();
+
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             Thread.currentThread().setContextClassLoader(getClassLoader(classLoader));
             try {
-                configureJasper();
+				jasperConfigurator.configure(this);
                 executeTasks(tasks);
             } finally {
+                jasperConfigurator.revert();
+                
                 if (classLoader != null) {
                     Thread.currentThread().setContextClassLoader(classLoader);
                 }
             }
         }
+	}
+
+	private JasperConfigurator getJasperConfigurator() throws MojoExecutionException {
+		
+		// All tests are organised for version >= 4.6
+		if (project == null) {
+			return new Jasper460Configurator();
+		}
+		
+		try {
+			@SuppressWarnings("unchecked")
+			Set<Artifact> artifacts = project.getDependencyArtifacts();
+			for (Artifact artifact : artifacts) {
+				if (JASPERREPORTS_GROUP_ID.equals(artifact.getGroupId())
+						&& JASPERREPORTS_ARTIFACT_ID.equals(artifact.getArtifactId())) {
+	
+					Version artifactVersion = version(artifact.getVersion());
+					if (artifactVersion.compareTo(version(4, 6, 0)) >= 0) {
+						return new Jasper460Configurator();
+					}
+					else if (artifactVersion.compareTo(version(3, 5, 3)) >= 0) {
+						return new Jasper353Configurator();
+					}
+	
+					throw new MojoExecutionException(
+						"Unsupported Jasper Reports version \"" + artifactVersion + "\".");
+				}
+			}
+		}
+		catch (Exception e) {
+			throw new MojoExecutionException(e.getMessage(), e);
+		}
+
+		throw new MojoExecutionException("Could not find Jasper Reports dependency.");
+	}
+
+	public boolean getXmlValidation() {
+		return xmlValidation;
+	}
+
+	public String getCompiler() {
+		return compiler;
+	}
+
+	public Map<String, String> getAdditionalProperties() {
+		return additionalProperties;
+	}
+	
+	public List<String> getClasspathElements() {
+		return classpathElements;
+	}
+
+	public char getPathSeparatorChar() {
+		return pathSeparatorChar;
 	}
 
 	/**
@@ -239,19 +311,6 @@ public class JasperReporter extends AbstractMojo {
 		}
 	}
 
-	private void configureJasper() {
-		DefaultJasperReportsContext jrContext = DefaultJasperReportsContext.getInstance();
-
-        jrContext.setProperty(JRReportSaxParserFactory.COMPILER_XML_VALIDATION, String.valueOf(xmlValidation));
-		jrContext.setProperty(JRCompiler.COMPILER_PREFIX, compiler == null ? JRJdtCompiler.class.getName() : compiler);
-		jrContext.setProperty(JRCompiler.COMPILER_KEEP_JAVA_FILE, Boolean.FALSE.toString());
-
-		if (additionalProperties != null) {
-			configureAdditionalProperties(JRPropertiesUtil.getInstance(jrContext));
-		}
-
-	}
-
     private ClassLoader getClassLoader(ClassLoader classLoader) throws MojoExecutionException {
         List<URL> classpath = new ArrayList<>();
 		if (classpathElements != null) {
@@ -269,12 +328,6 @@ public class JasperReporter extends AbstractMojo {
         URL[] urls = classpath.toArray(new URL[classpath.size()]);
         return new URLClassLoader(urls, classLoader);
     }
-
-    private void configureAdditionalProperties(JRPropertiesUtil propertiesUtil) {
-		for (Map.Entry<String, String> additionalProperty : additionalProperties.entrySet()) {
-			propertiesUtil.setProperty(additionalProperty.getKey(), additionalProperty.getValue());
-		}
-	}
 
 	private void checkIfOutputCanBeCreated() throws MojoExecutionException {
 		if (!outputDirectory.mkdirs()) {
