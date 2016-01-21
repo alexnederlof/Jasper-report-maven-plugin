@@ -1,3 +1,7 @@
+# 2.1 [unreleased]
+
+- Added `failOnMissingSourceDirectory` property, so that one can continue the build while sourceDirectory does not exist.
+
 # 2.0
 
 This release sets Jasper to version 6 and updates some other deps. Also uses the 
