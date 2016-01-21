@@ -233,6 +233,34 @@ public class JasperReportTest extends AbstractMojoTestCase {
 	}
 
 	/**
+	 * Test that a non-existent sourceDirectory fails the build.
+	 *
+	 * @throws Exception
+	 *             When an unexpected error occurs.
+	 */
+	public void testNonExistentFolderStopBuild() throws Exception {
+		try {
+			getAndExecuteMojo(getBasedir() + "/src/test/resources/testNonExistentFolderPom.xml");
+			fail("An exception should have been thrown");
+		}
+		catch (IllegalArgumentException e) {
+			assertTrue(e.getMessage().contains("nonExistentFolder"));
+		}
+	}
+
+	/**
+	 * Test that a non-existent sourceDirectory just be skipped if failOnMissingSourceDirectory=true.
+	 *
+	 * @throws Exception
+	 *             When an unexpected error occurs.
+	 */
+	public void testNonExistentFolderAllowed() throws Exception {
+		setupSourceAndDestinationFolder("/emptyFolder", "/emptyFolder_out");
+		getAndExecuteMojo(getBasedir() + "/src/test/resources/testNonExistentFolderAllowedPom.xml");
+		assertTrue("Output folder should be empty", destinationFolder.list().length == 0);
+	}
+
+	/**
 	 * The empty folder we test on is not transported by Git. We therefor have to create it manually
 	 * to do the test.
 	 */
