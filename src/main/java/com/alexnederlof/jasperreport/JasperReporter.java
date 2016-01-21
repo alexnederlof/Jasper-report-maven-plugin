@@ -166,7 +166,7 @@ public class JasperReporter extends AbstractMojo {
 		checkOutDirWritable(outputDirectory);
 
 		SourceMapping mapping = new SuffixMapping(sourceFileExt, outputFileExt);
-        Set<File> sources = jxmlFilesToCompile(mapping);
+        Set<File> sources = jrxmlFilesToCompile(mapping);
         if (sources.isEmpty()) {
             log.info( "Nothing to compile - all Jasper reports are up to date" );
         } else {
@@ -198,7 +198,7 @@ public class JasperReporter extends AbstractMojo {
      * @return set of jxml files to compile
      * @throws MojoExecutionException When there's trouble with the input
      */
-    protected Set<File> jxmlFilesToCompile(SourceMapping mapping) throws MojoExecutionException {
+    protected Set<File> jrxmlFilesToCompile(SourceMapping mapping) throws MojoExecutionException {
 		if (!sourceDirectory.isDirectory()) {
 			String message = sourceDirectory.getName() + " is not a directory";
 			if (failOnMissingSourceDirectory) {
