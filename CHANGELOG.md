@@ -1,3 +1,7 @@
+# 2.1
+
+- Added `failOnMissingSourceDirectory` property, so that one can continue the build while sourceDirectory does not exist.
+
 # 2.0
 
 This release sets Jasper to version 6 and updates some other deps. Also uses the 
@@ -9,7 +13,7 @@ new OSS release system instead of the old OSS parent pom.
 
 # 1.8
 
-- Fixes [#7](https://github.com/alexnederlof/Jasper-report-maven-plugin/issues/7) For each `.jrxml` file search th compiled .jasper if not found or older than source file recompile it.
+- Fixes [#7](https://github.com/alexnederlof/Jasper-report-maven-plugin/issues/7) For each `.jrxml` file search the compiled .jasper if not found or older than source file recompile it.
 - Fixes [#9](https://github.com/alexnederlof/Jasper-report-maven-plugin/issues/9) Project classpath added to ClassLoader.
 
 Thanks to [@lucarota](https://github.com/lucarota)

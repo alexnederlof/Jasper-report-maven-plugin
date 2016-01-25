@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,6 @@ import net.sf.jasperreports.engine.design.JRCompiler;
 import net.sf.jasperreports.engine.design.JRJdtCompiler;
 import net.sf.jasperreports.engine.xml.JRReportSaxParserFactory;
 
-import org.apache.commons.lang.Validate;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
@@ -142,6 +142,14 @@ public class JasperReporter extends AbstractMojo {
 	 */
 	private Map<String, String> additionalProperties;
 
+	/**
+	 * If failOnMissingSourceDirectory is on the plug-in will fail the build if source directory does not exist.
+	 * Default value is true.
+	 *
+	 * @parameter default-value="true"
+	 */
+	private boolean failOnMissingSourceDirectory = true;
+
 	private Log log;
 
 	public JasperReporter() {
@@ -158,7 +166,7 @@ public class JasperReporter extends AbstractMojo {
 		checkOutDirWritable(outputDirectory);
 
 		SourceMapping mapping = new SuffixMapping(sourceFileExt, outputFileExt);
-        Set<File> sources = jxmlFilesToCompile(mapping);
+        Set<File> sources = jrxmlFilesToCompile(mapping);
         if (sources.isEmpty()) {
             log.info( "Nothing to compile - all Jasper reports are up to date" );
         } else {
@@ -190,8 +198,16 @@ public class JasperReporter extends AbstractMojo {
      * @return set of jxml files to compile
      * @throws MojoExecutionException When there's trouble with the input
      */
-    protected Set<File> jxmlFilesToCompile(SourceMapping mapping) throws MojoExecutionException {
-        Validate.isTrue(sourceDirectory.isDirectory(), sourceDirectory.getName() + " is not a directory");
+    protected Set<File> jrxmlFilesToCompile(SourceMapping mapping) throws MojoExecutionException {
+		if (!sourceDirectory.isDirectory()) {
+			String message = sourceDirectory.getName() + " is not a directory";
+			if (failOnMissingSourceDirectory) {
+				throw new IllegalArgumentException(message);
+			} else {
+				log.warn(message + ", skip JasperReports reports compiling.");
+				return Collections.emptySet();
+			}
+		}
 
         try {
             SourceInclusionScanner scanner = new StaleSourceScanner();

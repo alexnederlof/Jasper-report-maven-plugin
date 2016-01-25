@@ -35,6 +35,7 @@ You can use the plugin by adding it to the plug-in section in your pom;
 				<xmlValidation>true</xmlValidation>
 				<verbose>false</verbose>
 				<numberOfThreads>4</numberOfThreads>
+				<failOnMissingSourceDirectory>true</failOnMissingSourceDirectory>
 			</configuration>
 		</plugin>
 	</plugins>
