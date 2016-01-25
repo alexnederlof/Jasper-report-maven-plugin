@@ -65,7 +65,7 @@ public class JasperReporter extends AbstractMojo {
 	/**
 	 * This is where the .jasper files are written.
 	 *
-	 * @parameter property="${project.build.outputDirectory}/jasper"
+	 * @parameter expression="${project.build.outputDirectory}/jasper"
 	 */
 	private File outputDirectory;
 
