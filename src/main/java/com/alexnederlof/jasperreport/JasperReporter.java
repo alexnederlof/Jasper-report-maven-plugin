@@ -36,6 +36,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.codehaus.plexus.compiler.util.scan.InclusionScanException;
+import org.codehaus.plexus.compiler.util.scan.SimpleSourceInclusionScanner;
 import org.codehaus.plexus.compiler.util.scan.SourceInclusionScanner;
 import org.codehaus.plexus.compiler.util.scan.StaleSourceScanner;
 import org.codehaus.plexus.compiler.util.scan.mapping.SourceMapping;
@@ -149,6 +150,13 @@ public class JasperReporter extends AbstractMojo {
 	 * @parameter default-value="true"
 	 */
 	private boolean failOnMissingSourceDirectory = true;
+	
+	/**
+	 * This is the source inclusion scanner class used, a <code>org.codehaus.plexus.compiler.util.scan.SourceInclusionScanner</code> implementation class. 
+	 *
+	 * @parameter default-value="org.codehaus.plexus.compiler.util.scan.StaleSourceScanner"
+	 */
+	private String sourceScanner = StaleSourceScanner.class.getName();
 
 	private Log log;
 
@@ -210,7 +218,7 @@ public class JasperReporter extends AbstractMojo {
 		}
 
         try {
-            SourceInclusionScanner scanner = new StaleSourceScanner();
+        	SourceInclusionScanner scanner = createSourceInclusionScanner();
             scanner.addSourceMapping(mapping);
             return scanner.getIncludedSources(sourceDirectory, outputDirectory);
         } catch (InclusionScanException e) {
@@ -229,6 +237,7 @@ public class JasperReporter extends AbstractMojo {
 		log.info("JasperReports Compiler: " + compiler);
 		log.info("Number of threads: " + numberOfThreads);
 		log.info("classpathElements: " + classpathElements);
+		log.info("Source Scanner: " + sourceScanner);
 	}
 
 	/**
@@ -371,6 +380,18 @@ public class JasperReporter extends AbstractMojo {
 	private void checkForExceptions(List<Future<Void>> output) throws InterruptedException, ExecutionException {
 		for (Future<Void> future : output) {
 			future.get();
+		}
+	}
+	
+	private SourceInclusionScanner createSourceInclusionScanner() throws MojoExecutionException {
+		if (sourceScanner.equals(StaleSourceScanner.class.getName())) {
+			return new StaleSourceScanner();
+		}
+		else if (sourceScanner.equals(SimpleSourceInclusionScanner.class.getName())) {
+			return new SimpleSourceInclusionScanner(Collections.singleton("**/*"), Collections.<String> emptySet());
+		}
+		else {
+			throw new MojoExecutionException("sourceScanner not supported: \'" + sourceScanner + "\'.");
 		}
 	}
 
