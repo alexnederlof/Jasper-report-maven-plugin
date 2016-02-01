@@ -388,7 +388,8 @@ public class JasperReporter extends AbstractMojo {
 			return new StaleSourceScanner();
 		}
 		else if (sourceScanner.equals(SimpleSourceInclusionScanner.class.getName())) {
-			return new SimpleSourceInclusionScanner(Collections.singleton("**/*"), Collections.<String> emptySet());
+			return new SimpleSourceInclusionScanner(Collections.singleton("**/*" + sourceFileExt),
+					Collections.<String> emptySet());
 		}
 		else {
 			throw new MojoExecutionException("sourceScanner not supported: \'" + sourceScanner + "\'.");
