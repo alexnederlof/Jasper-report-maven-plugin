@@ -36,6 +36,7 @@ You can use the plugin by adding it to the plug-in section in your pom;
 				<verbose>false</verbose>
 				<numberOfThreads>4</numberOfThreads>
 				<failOnMissingSourceDirectory>true</failOnMissingSourceDirectory>
+				<sourceScanner>org.codehaus.plexus.compiler.util.scan.StaleSourceScanner</sourceScanner>
 			</configuration>
 		</plugin>
 	</plugins>
