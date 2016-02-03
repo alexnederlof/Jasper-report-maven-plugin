@@ -1,3 +1,7 @@
+# 2.2
+
+- Configuration option to always compile all files
+
 # 2.1
 
 - Added `failOnMissingSourceDirectory` property, so that one can continue the build while sourceDirectory does not exist.
