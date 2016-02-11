@@ -268,7 +268,7 @@ public class JasperReporter extends AbstractMojo {
 		DefaultJasperReportsContext jrContext = DefaultJasperReportsContext.getInstance();
 
         jrContext.setProperty(JRReportSaxParserFactory.COMPILER_XML_VALIDATION, String.valueOf(xmlValidation));
-		jrContext.setProperty(JRCompiler.COMPILER_PREFIX, compiler == null ? JRJdtCompiler.class.getName() : compiler);
+		jrContext.setProperty(JRCompiler.COMPILER_PREFIX+"java", compiler == null ? JRJdtCompiler.class.getName() : compiler);
 		jrContext.setProperty(JRCompiler.COMPILER_KEEP_JAVA_FILE, Boolean.FALSE.toString());
 
 		if (additionalProperties != null) {
