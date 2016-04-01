@@ -10,6 +10,7 @@
 
 This release sets Jasper to version 6 and updates some other deps. Also uses the 
 new OSS release system instead of the old OSS parent pom.
+This release requires using Maven 3.x.
 
 # 1.9
 
