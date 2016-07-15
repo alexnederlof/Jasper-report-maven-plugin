@@ -278,7 +278,7 @@ public class JasperReporter extends AbstractMojo {
 	}
 
     private ClassLoader getClassLoader(ClassLoader classLoader) throws MojoExecutionException {
-        List<URL> classpath = new ArrayList<>();
+        List<URL> classpath = new ArrayList<URL>();
 		if (classpathElements != null) {
 			for (String element : classpathElements) {
 				try {
@@ -324,7 +324,7 @@ public class JasperReporter extends AbstractMojo {
     }
 
 	private List<CompileTask> generateTasks(Set<File> sources, SourceMapping mapping) throws MojoExecutionException {
-		List<CompileTask> tasks = new LinkedList<>();
+		List<CompileTask> tasks = new LinkedList<CompileTask>();
 		try {
         String root = sourceDirectory.getCanonicalPath();
 
