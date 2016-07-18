@@ -1,3 +1,7 @@
+# 2.3
+
+Roll back to java 6 for legacy projects.
+
 # 2.2
 
 - Configuration option to always compile all files
