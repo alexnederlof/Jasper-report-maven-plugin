@@ -14,6 +14,7 @@ package com.alexnederlof.jasperreport;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.Callable;
 
@@ -60,9 +61,11 @@ public class CompileTask implements Callable<Void> {
 	@Override
 	public Void call() throws Exception {
 		OutputStream out = null;
+                InputStream in = null;
 		try {
-	        out =  new FileOutputStream(destination);
-			JasperCompileManager.compileReportToStream(new FileInputStream(source), out);
+                    out =  new FileOutputStream(destination);
+                    in = new FileInputStream(source);
+			JasperCompileManager.compileReportToStream(in, out);
 			if (verbose) {
 				log.info("Compiling " + source.getName());
 			}
@@ -71,6 +74,9 @@ public class CompileTask implements Callable<Void> {
 		    if (out != null) {
 		        out.close();
 		    }
+                    if(in != null){
+                        in.close();
+                    }
 			cleanUpAndThrowError(destination, e);
 		}
 		return null;
