@@ -63,20 +63,20 @@ public class CompileTask implements Callable<Void> {
 		OutputStream out = null;
                 InputStream in = null;
 		try {
-                    out =  new FileOutputStream(destination);
-                    in = new FileInputStream(source);
+                        out =  new FileOutputStream(destination);
+                        in = new FileInputStream(source);
 			JasperCompileManager.compileReportToStream(in, out);
 			if (verbose) {
 				log.info("Compiling " + source.getName());
 			}
 		}
 		catch (Exception e) {
-		    if (out != null) {
-		        out.close();
-		    }
-                    if(in != null){
-                        in.close();
-                    }
+                        if (out != null) {
+                            out.close();
+                        }
+                        if(in != null){
+                            in.close();
+                        }
 			cleanUpAndThrowError(destination, e);
 		}
 		return null;
