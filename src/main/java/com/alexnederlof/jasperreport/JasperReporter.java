@@ -151,7 +151,7 @@ public class JasperReporter extends AbstractMojo {
      *
      * @parameter default-value="true"
      */
-    private boolean failOnMissingSourceDirectory = true;
+    private final boolean failOnMissingSourceDirectory = true;
 
     /**
      * This is the source inclusion scanner class used, a
@@ -161,7 +161,7 @@ public class JasperReporter extends AbstractMojo {
      * @parameter
      * default-value="org.codehaus.plexus.compiler.util.scan.StaleSourceScanner"
      */
-    private String sourceScanner = StaleSourceScanner.class.getName();
+    private final String sourceScanner = StaleSourceScanner.class.getName();
 
     private Log log;
 
@@ -253,18 +253,16 @@ public class JasperReporter extends AbstractMojo {
      * @throws MojoExecutionException When the output directory is not writable
      */
     private void checkOutDirWritable(File outputDirectory) throws MojoExecutionException {
-        if (outputDirectory.exists()) {
-            if (outputDirectory.canWrite()) {
-                return;
-            } else {
-                throw new MojoExecutionException("The output dir exists but was not writable. "
-                        + "Try running maven with the 'clean' goal.");
+        if (!outputDirectory.exists()) {
+            checkIfOutputCanBeCreated();
+            checkIfOutputDirIsWritable();
+            if (verbose) {
+                log.info("Output dir check OK");
             }
-        }
-        checkIfOutputCanBeCreated();
-        checkIfOutputDirIsWritable();
-        if (verbose) {
-            log.info("Output dir check OK");
+        } else if (!outputDirectory.canWrite()) {
+            throw new MojoExecutionException(
+                "The output dir exists but was not writable. "
+                + "Try running maven with the 'clean' goal.");
         }
     }
 
@@ -278,10 +276,10 @@ public class JasperReporter extends AbstractMojo {
         if (additionalProperties != null) {
             configureAdditionalProperties(JRPropertiesUtil.getInstance(jrContext));
         }
-
     }
 
-    private ClassLoader getClassLoader(ClassLoader classLoader) throws MojoExecutionException {
+    private ClassLoader getClassLoader(ClassLoader classLoader) 
+            throws MojoExecutionException {
         List<URL> classpath = new ArrayList<URL>();
         if (classpathElements != null) {
             for (String element : classpathElements) {
@@ -290,7 +288,8 @@ public class JasperReporter extends AbstractMojo {
                     classpath.add(f.toURI().toURL());
                     log.debug("Added to classpath " + element);
                 } catch (Exception e) {
-                    throw new MojoExecutionException("Error setting classpath " + element + " " + e.getMessage());
+                    throw new MojoExecutionException(
+                        "Error setting classpath " + element + " " + e.getMessage());
                 }
             }
         }
@@ -361,8 +360,8 @@ public class JasperReporter extends AbstractMojo {
     private void executeTasks(List<CompileTask> tasks) throws MojoExecutionException {
         try {
             long t1 = System.currentTimeMillis();
-            List<Future<Void>> output = Executors.newFixedThreadPool(numberOfThreads)
-                    .invokeAll(tasks);
+            List<Future<Void>> output = 
+                Executors.newFixedThreadPool(numberOfThreads).invokeAll(tasks);
             long time = (System.currentTimeMillis() - t1);
             log.info("Generated " + output.size() + " jasper reports in " + (time / 1000.0) + " seconds");
             checkForExceptions(output);
