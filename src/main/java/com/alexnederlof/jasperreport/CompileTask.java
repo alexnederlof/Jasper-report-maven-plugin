@@ -65,13 +65,14 @@ public class CompileTask implements Callable<Void> {
                 log.info("Compiling " + source.getName());
             }
         } catch (Exception e) {
+            cleanUpAndThrowError(destination, e);
+        } finally {
             if (out != null) {
                 out.close();
             }
             if (in != null) {
                 in.close();
             }
-            cleanUpAndThrowError(destination, e);
         }
         return null;
     }
