@@ -5,7 +5,7 @@
 	<artifactId>jasperreports-plugin</artifactId>
 
 	<packaging>maven-plugin</packaging>
-	<version>2.3-SNAPSHOT</version>
+	<version>2.3</version>
 	<name>jasperreport-plugin</name>
 	<description>A Jasper compiler plugin</description>
 	<url>http://github.com/alexnederlof/Jasper-report-maven-plugin</url>
@@ -57,6 +57,11 @@
 		 <developer>
 			<id>tan9</id>
 			<name>Pei-Tang Huang</name>
+		</developer>
+
+		<developer>
+			<id>brunoabdon</id>
+			<name>Bruno Abdon</name>
 		</developer>
 	</developers>
 
