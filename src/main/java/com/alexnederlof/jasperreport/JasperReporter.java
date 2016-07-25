@@ -51,7 +51,7 @@ import org.codehaus.plexus.compiler.util.scan.mapping.SuffixMapping;
  */
 public class JasperReporter extends AbstractMojo {
 
-    static final String ERROR_JRE_COMPILE_ERROR = 
+    static final String ERROR_JRE_COMPILE_ERROR =
         "Some Jasper reports could not be compiled. See log above for details.";
 
     /**
@@ -151,7 +151,7 @@ public class JasperReporter extends AbstractMojo {
      *
      * @parameter default-value="true"
      */
-    private final boolean failOnMissingSourceDirectory = true;
+    private boolean failOnMissingSourceDirectory;
 
     /**
      * This is the source inclusion scanner class used, a
@@ -278,7 +278,7 @@ public class JasperReporter extends AbstractMojo {
         }
     }
 
-    private ClassLoader getClassLoader(ClassLoader classLoader) 
+    private ClassLoader getClassLoader(ClassLoader classLoader)
             throws MojoExecutionException {
         List<URL> classpath = new ArrayList<URL>();
         if (classpathElements != null) {
@@ -360,7 +360,7 @@ public class JasperReporter extends AbstractMojo {
     private void executeTasks(List<CompileTask> tasks) throws MojoExecutionException {
         try {
             long t1 = System.currentTimeMillis();
-            List<Future<Void>> output = 
+            List<Future<Void>> output =
                 Executors.newFixedThreadPool(numberOfThreads).invokeAll(tasks);
             long time = (System.currentTimeMillis() - t1);
             log.info("Generated " + output.size() + " jasper reports in " + (time / 1000.0) + " seconds");
