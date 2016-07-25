@@ -1,3 +1,10 @@
+# 2.3
+
+- Backwards compatibility to Java 1.6
+- Close open input skills after usage
+
+Big thanks to @brunoabdon
+
 # 2.2
 
 - Configuration option to always compile all files
