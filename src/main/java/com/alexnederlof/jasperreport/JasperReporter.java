@@ -151,7 +151,7 @@ public class JasperReporter extends AbstractMojo {
      *
      * @parameter default-value="true"
      */
-    private final boolean failOnMissingSourceDirectory = true;
+    private boolean failOnMissingSourceDirectory = true;
 
     /**
      * This is the source inclusion scanner class used, a
@@ -161,7 +161,7 @@ public class JasperReporter extends AbstractMojo {
      * @parameter
      * default-value="org.codehaus.plexus.compiler.util.scan.StaleSourceScanner"
      */
-    private final String sourceScanner = StaleSourceScanner.class.getName();
+    private String sourceScanner = StaleSourceScanner.class.getName();
 
     private Log log;
 
