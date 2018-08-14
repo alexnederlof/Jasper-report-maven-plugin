@@ -63,6 +63,12 @@
 			<id>brunoabdon</id>
 			<name>Bruno Abdon</name>
 		</developer>
+
+		<developer>
+			<id>bwiedmann</id>
+			<name>Benjamin Wiedmann</name>
+			<email>github@wied.it</email>
+		</developer>
 	</developers>
 
 	<dependencies>

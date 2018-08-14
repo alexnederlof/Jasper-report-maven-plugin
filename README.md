@@ -73,3 +73,16 @@ You can also add extra elements to the classpath using
 	</configuration>
 </plugin>
 ```
+
+You can also use this alternative approach for JARs:
+
+```xml
+<plugin>
+	...
+	<configuration>
+		...
+		<additionalClasspath>/web/lib/ServiceBeans.jar;/web/lib/WebForms.jar</additionalClasspath>
+	</configuration>
+</plugin>
+```
+
