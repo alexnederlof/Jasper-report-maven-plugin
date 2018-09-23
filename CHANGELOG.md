@@ -1,3 +1,9 @@
+# 2.4
+
+- Update to Java 8, and new Plugin Mojo style with annotations
+- Added `additionalClasspath` option to support adding extra libraries to the classpath.
+- Updated to jasper 6.7
+
 # 2.3
 
 - Backwards compatibility to Java 1.6
