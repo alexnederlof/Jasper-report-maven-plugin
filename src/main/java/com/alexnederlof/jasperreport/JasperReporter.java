@@ -163,6 +163,23 @@ public class JasperReporter extends AbstractMojo {
      */
     private String sourceScanner = StaleSourceScanner.class.getName();
 
+    /**
+     * Provides the option to add additional JARs to the Classpath for compiling. This is handy in case you have references to external Java-Beans in your JasperReports.  
+     *
+     * <pre>
+     * {@code
+     * <configuration>
+     *  ...
+     *      <additionalClasspath>/web/lib/ServiceBeans.jar;/web/lib/WebForms.jar</additionalClasspath>
+     *  ... 
+     * </configuration>
+     * }
+     * </pre>
+     *
+     * @parameter additionalClasspath
+     */
+    private String additionalClasspath;
+
     private Log log;
 
     public JasperReporter() {
@@ -242,6 +259,7 @@ public class JasperReporter extends AbstractMojo {
         log.info("JasperReports Compiler: " + compiler);
         log.info("Number of threads: " + numberOfThreads);
         log.info("classpathElements: " + classpathElements);
+        log.info("additionalClasspath: " + additionalClasspath);
         log.info("Source Scanner: " + sourceScanner);
     }
 
@@ -290,6 +308,18 @@ public class JasperReporter extends AbstractMojo {
                 } catch (Exception e) {
                     throw new MojoExecutionException(
                         "Error setting classpath " + element + " " + e.getMessage());
+                }
+            }
+        }
+
+        if (additionalClasspath != null) {
+            for (String element : additionalClasspath.split("[;]")) {
+                try {
+                    File f = new File(element);
+                    classpath.add(f.toURI().toURL());
+                    log.debug("Added additionalClasspath to classpath " + element);
+                } catch (Exception e) {
+                    throw new MojoExecutionException("Error setting classpath " + element + " " + e.getMessage());
                 }
             }
         }
