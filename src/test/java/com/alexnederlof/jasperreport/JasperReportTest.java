@@ -26,12 +26,11 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-
+import net.sf.jasperreports.engine.util.NullOutputStream;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.codehaus.plexus.util.FileUtils;
 
-import com.google.common.io.NullOutputStream;
 
 /**
  * Test the report generation.
@@ -55,7 +54,7 @@ public class JasperReportTest extends AbstractMojoTestCase {
 	/**
 	 * Test the normal generation of Jasper reports. The files are retrieved from the official
 	 * jasper examples folder. No errors or warnings should occur.
-	 * 
+	 *
 	 * @throws Exception
 	 *             When an unexpexted error occures.
 	 */
@@ -75,7 +74,7 @@ public class JasperReportTest extends AbstractMojoTestCase {
 	/**
 	 * Test the normal generation of Jasper reports with additional properties. The files are
 	 * retrieved from the official jasper examples folder. No errors or warnings should occur.
-	 * 
+	 *
 	 * @throws Exception
 	 *             When an unexpexted error occures.
 	 */
@@ -192,7 +191,7 @@ public class JasperReportTest extends AbstractMojoTestCase {
 	/**
 	 * Test that an invalid Jasper file should stop the build completely by throwing an
 	 * {@link MojoExecutionException}.
-	 * 
+	 *
 	 * @throws Exception
 	 *             When an unexpected error occurs.
 	 */
@@ -209,7 +208,7 @@ public class JasperReportTest extends AbstractMojoTestCase {
 
 	/**
 	 * Test that all files with an invalid suffix are not compiled.
-	 * 
+	 *
 	 * @throws Exception
 	 *             When an unexpected error occurs.
 	 */
@@ -221,7 +220,7 @@ public class JasperReportTest extends AbstractMojoTestCase {
 
 	/**
 	 * Test that an empty folder doesn't create errors but just does nothing.
-	 * 
+	 *
 	 * @throws Exception
 	 *             When an unexpected error occurs.
 	 */
@@ -274,7 +273,7 @@ public class JasperReportTest extends AbstractMojoTestCase {
 	/**
 	 * Test that the folder structure of the output is the same as the folder structure of the
 	 * input.
-	 * 
+	 *
 	 * @throws Exception
 	 *             When an unexpected error occurs.
 	 */
