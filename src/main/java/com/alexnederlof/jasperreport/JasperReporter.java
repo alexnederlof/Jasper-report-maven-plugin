@@ -51,14 +51,13 @@ import org.codehaus.plexus.compiler.util.scan.mapping.SuffixMapping;
  */
 public class JasperReporter extends AbstractMojo {
 
-    static final String ERROR_JRE_COMPILE_ERROR = 
+    static final String ERROR_JRE_COMPILE_ERROR =
         "Some Jasper reports could not be compiled. See log above for details.";
 
     /**
      * This is the java compiler used
      *
-     * @parameter
-     * default-value="net.sf.jasperreports.engine.design.JRJdtCompiler"
+     * @parameter default-value="net.sf.jasperreports.engine.design.JRJdtCompiler"
      * @required
      */
     private String compiler;
@@ -66,7 +65,7 @@ public class JasperReporter extends AbstractMojo {
     /**
      * This is where the .jasper files are written.
      *
-     * @parameter expression="${project.build.outputDirectory}/jasper"
+     * @parameter property="${project.build.outputDirectory}/jasper"
      */
     private File outputDirectory;
 
@@ -164,14 +163,14 @@ public class JasperReporter extends AbstractMojo {
     private String sourceScanner = StaleSourceScanner.class.getName();
 
     /**
-     * Provides the option to add additional JARs to the Classpath for compiling. This is handy in case you have references to external Java-Beans in your JasperReports.  
+     * Provides the option to add additional JARs to the Classpath for compiling. This is handy in case you have references to external Java-Beans in your JasperReports.
      *
      * <pre>
      * {@code
      * <configuration>
      *  ...
      *      <additionalClasspath>/web/lib/ServiceBeans.jar;/web/lib/WebForms.jar</additionalClasspath>
-     *  ... 
+     *  ...
      * </configuration>
      * }
      * </pre>
@@ -296,7 +295,7 @@ public class JasperReporter extends AbstractMojo {
         }
     }
 
-    private ClassLoader getClassLoader(ClassLoader classLoader) 
+    private ClassLoader getClassLoader(ClassLoader classLoader)
             throws MojoExecutionException {
         List<URL> classpath = new ArrayList<URL>();
         if (classpathElements != null) {
@@ -390,7 +389,7 @@ public class JasperReporter extends AbstractMojo {
     private void executeTasks(List<CompileTask> tasks) throws MojoExecutionException {
         try {
             long t1 = System.currentTimeMillis();
-            List<Future<Void>> output = 
+            List<Future<Void>> output =
                 Executors.newFixedThreadPool(numberOfThreads).invokeAll(tasks);
             long time = (System.currentTimeMillis() - t1);
             log.info("Generated " + output.size() + " jasper reports in " + (time / 1000.0) + " seconds");
