@@ -93,7 +93,7 @@ public class JasperReporter extends AbstractMojo {
 	 * Check the source files before compiling. Default value is true.
 	 *
 	 */
-	@Parameter(defaultValue = "tue")
+	@Parameter(defaultValue = "true")
 	private boolean xmlValidation;
 
 	/**
