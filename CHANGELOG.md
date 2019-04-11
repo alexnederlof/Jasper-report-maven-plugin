@@ -1,3 +1,8 @@
+# 2.5
+
+- Update to Jasper 6.8.0
+- Bug fix typo in xmlValidation https://github.com/alexnederlof/Jasper-report-maven-plugin/pull/51
+
 # 2.4
 
 - Update to Java 8, and new Plugin Mojo style with annotations
