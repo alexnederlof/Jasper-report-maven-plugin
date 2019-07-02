@@ -17,7 +17,7 @@ You can use the plugin by adding it to the plug-in section in your pom;
 		<plugin>
 			<groupId>com.alexnederlof</groupId>
 			<artifactId>jasperreports-plugin</artifactId>
-			<version>2.0</version>
+			<version>2.6</version>
 			<executions>
 				<execution>
 					<phase>process-sources</phase>
