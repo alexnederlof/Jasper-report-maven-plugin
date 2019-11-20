@@ -11,20 +11,6 @@ package com.alexnederlof.jasperreport;
  * for the specific language governing permissions and limitations under the License.
  */
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRPropertiesUtil;
@@ -44,6 +30,20 @@ import org.codehaus.plexus.compiler.util.scan.SourceInclusionScanner;
 import org.codehaus.plexus.compiler.util.scan.StaleSourceScanner;
 import org.codehaus.plexus.compiler.util.scan.mapping.SourceMapping;
 import org.codehaus.plexus.compiler.util.scan.mapping.SuffixMapping;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * This plugin compiles jasper source files to the target folder. While doing
@@ -110,7 +110,7 @@ public class JasperReporter extends AbstractMojo {
 	 * a few, or if you have SSD, it might be faster to set it to 2.
 	 *
 	 */
-	@Parameter(defaultValue = "4")
+	@Parameter(defaultValue = "0")
 	private int numberOfThreads;
 
 	@Parameter(property = "project.compileClasspathElements")
@@ -398,8 +398,11 @@ public class JasperReporter extends AbstractMojo {
 	private void executeTasks(List<CompileTask> tasks) throws MojoExecutionException {
 		try {
 			long t1 = System.currentTimeMillis();
-			List<Future<Void>> output =
-					Executors.newFixedThreadPool(numberOfThreads).invokeAll(tasks);
+			int numberOfThreadsForExecutors = numberOfThreads;
+			if(numberOfThreadsForExecutors <= 0) {
+				numberOfThreadsForExecutors = Runtime.getRuntime().availableProcessors();
+			}
+			List<Future<Void>> output = Executors.newFixedThreadPool(numberOfThreadsForExecutors).invokeAll(tasks);
 			long time = (System.currentTimeMillis() - t1);
 			log.info("Generated " + output.size() + " jasper reports in " + (time / 1000.0) + " seconds");
 			checkForExceptions(output);
