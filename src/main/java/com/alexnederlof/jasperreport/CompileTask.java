@@ -38,7 +38,7 @@ public class CompileTask implements Callable<Void> {
      * @param log The logger.
      * @param verbose If the output should be verbose.
      */
-    public CompileTask(File source, File destination, Log log, boolean verbose) {
+    CompileTask(File source, File destination, Log log, boolean verbose) {
         super();
         this.source = source;
         this.destination = destination;
@@ -55,24 +55,13 @@ public class CompileTask implements Callable<Void> {
      */
     @Override
     public Void call() throws Exception {
-        OutputStream out = null;
-        InputStream in = null;
-        try {
-            out = new FileOutputStream(destination);
-            in = new FileInputStream(source);
+        try (OutputStream out = new FileOutputStream(destination); InputStream in = new FileInputStream(source)) {
             JasperCompileManager.compileReportToStream(in, out);
             if (verbose) {
                 log.info("Compiling " + source.getName());
             }
         } catch (Exception e) {
             cleanUpAndThrowError(destination, e);
-        } finally {
-            if (out != null) {
-                out.close();
-            }
-            if (in != null) {
-                in.close();
-            }
         }
         return null;
     }

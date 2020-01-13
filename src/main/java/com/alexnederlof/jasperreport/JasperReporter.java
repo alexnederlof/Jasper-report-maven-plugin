@@ -226,7 +226,7 @@ public class JasperReporter extends AbstractMojo {
 	 *
 	 * @throws MojoExecutionException When there's trouble with the input
 	 */
-	protected Set<File> jrxmlFilesToCompile(SourceMapping mapping) throws MojoExecutionException {
+	private Set<File> jrxmlFilesToCompile(SourceMapping mapping) throws MojoExecutionException {
 		if (!sourceDirectory.isDirectory()) {
 			String message = sourceDirectory.getName() + " is not a directory";
 			if (failOnMissingSourceDirectory) {
@@ -300,7 +300,7 @@ public class JasperReporter extends AbstractMojo {
 
 	private ClassLoader getClassLoader(ClassLoader classLoader)
 			throws MojoExecutionException {
-		List<URL> classpath = new ArrayList<URL>();
+		List<URL> classpath = new ArrayList<>();
 		if (classpathElements != null) {
 			for (String element : classpathElements) {
 				try {
@@ -328,7 +328,7 @@ public class JasperReporter extends AbstractMojo {
 			}
 		}
 
-		URL[] urls = classpath.toArray(new URL[classpath.size()]);
+		URL[] urls = classpath.toArray(new URL[0]);
 		return new URLClassLoader(urls, classLoader);
 	}
 
@@ -362,7 +362,7 @@ public class JasperReporter extends AbstractMojo {
 	}
 
 	private List<CompileTask> generateTasks(Set<File> sources, SourceMapping mapping) throws MojoExecutionException {
-		List<CompileTask> tasks = new LinkedList<CompileTask>();
+		List<CompileTask> tasks = new LinkedList<>();
 		try {
 			String root = sourceDirectory.getCanonicalPath();
 
@@ -430,7 +430,7 @@ public class JasperReporter extends AbstractMojo {
 		}
 		else if (sourceScanner.equals(SimpleSourceInclusionScanner.class.getName())) {
 			return new SimpleSourceInclusionScanner(Collections.singleton("**/*" + sourceFileExt),
-					Collections.<String>emptySet());
+					Collections.emptySet());
 		}
 		else {
 			throw new MojoExecutionException("sourceScanner not supported: \'" + sourceScanner + "\'.");
