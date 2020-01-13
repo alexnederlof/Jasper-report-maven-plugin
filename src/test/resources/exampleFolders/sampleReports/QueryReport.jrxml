@@ -115,13 +115,13 @@
 					$F{Id}
 				</textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
+			<textField textAdjust="StretchHeight">
 				<reportElement x="55" y="4" width="200" height="15" positionType="Float"/>
 				<textFieldExpression class="java.lang.String">
 					$F{FirstName} + " " + $F{LastName}
 				</textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
+			<textField textAdjust="StretchHeight">
 				<reportElement x="260" y="4" width="255" height="15" positionType="Float"/>
 				<textFieldExpression class="java.lang.String">
 					$F{Street}
@@ -156,7 +156,7 @@
 	</pageFooter>
 	<summary>
 		<band height="60">
-			<textField isStretchWithOverflow="true">
+			<textField textAdjust="StretchHeight">
 				<reportElement x="175" y="20" width="165" height="15" style="Sans_Italic"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression class="java.lang.String">

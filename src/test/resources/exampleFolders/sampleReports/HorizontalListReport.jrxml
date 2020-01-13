@@ -83,12 +83,12 @@
 								<textElement/>
 								<textFieldExpression><![CDATA["#" + $V{REPORT_COUNT} + " - " + $F{Id}]]></textFieldExpression>
 							</textField>
-							<textField isStretchWithOverflow="true">
+							<textField textAdjust="StretchHeight">
 								<reportElement positionType="Float" x="10" y="14" width="110" height="12" style="Sans_Small"/>
 								<textElement/>
 								<textFieldExpression class="java.lang.String"><![CDATA[$F{FirstName} + " " + $F{LastName}]]></textFieldExpression>
 							</textField>
-							<textField isStretchWithOverflow="true">
+							<textField textAdjust="StretchHeight">
 								<reportElement positionType="Float" x="10" y="26" width="110" height="12" style="Sans_Small"/>
 								<textElement/>
 								<textFieldExpression class="java.lang.String"><![CDATA[$F{Street} + ", " + $F{City}]]></textFieldExpression>

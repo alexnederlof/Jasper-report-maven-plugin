@@ -115,7 +115,7 @@ This sentence might not fit fully in the space reserved for the element.]]></tex
 				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="5" y="5" width="1" height="16" isPrintWhenDetailOverflows="true"/>
 				<graphicElement/>
 			</line>
-			<textField isStretchWithOverflow="true">
+			<textField textAdjust="StretchHeight">
 				<reportElement x="10" y="5" width="100" height="16" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Justified">
 					<font size="12"/>
@@ -132,7 +132,7 @@ This sentence might not fit fully in the space reserved for the element.]]></tex
 				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="5" y="22" width="1" height="16" isPrintWhenDetailOverflows="true" forecolor="#808080"/>
 				<graphicElement/>
 			</line>
-			<textField isStretchWithOverflow="true">
+			<textField textAdjust="StretchHeight">
 				<reportElement positionType="Float" x="20" y="22" width="100" height="16" isRemoveLineWhenBlank="true" forecolor="#808080"/>
 				<textElement textAlignment="Justified">
 					<font size="12"/>
@@ -149,7 +149,7 @@ This sentence might not fit fully in the space reserved for the element.]]></tex
 				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="5" y="39" width="1" height="16" isPrintWhenDetailOverflows="true" forecolor="#c0c0c0"/>
 				<graphicElement/>
 			</line>
-			<textField isStretchWithOverflow="true">
+			<textField textAdjust="StretchHeight">
 				<reportElement positionType="Float" x="30" y="39" width="100" height="16" isRemoveLineWhenBlank="true" forecolor="#c0c0c0"/>
 				<textElement textAlignment="Justified">
 					<font size="12"/>
@@ -174,7 +174,7 @@ This sentence might not fit fully in the space reserved for the element.]]></tex
 				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="145" y="5" width="1" height="1" isPrintWhenDetailOverflows="true"/>
 				<graphicElement/>
 			</line>
-			<textField isStretchWithOverflow="true">
+			<textField textAdjust="StretchHeight">
 				<reportElement x="150" y="5" width="100" height="0" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Justified">
 					<font size="12"/>
@@ -191,7 +191,7 @@ This sentence might not fit fully in the space reserved for the element.]]></tex
 				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="145" y="6" width="1" height="1" isPrintWhenDetailOverflows="true" forecolor="#808080"/>
 				<graphicElement/>
 			</line>
-			<textField isStretchWithOverflow="true">
+			<textField textAdjust="StretchHeight">
 				<reportElement positionType="Float" x="160" y="6" width="100" height="0" isRemoveLineWhenBlank="true" forecolor="#808080"/>
 				<textElement textAlignment="Justified">
 					<font size="12"/>
@@ -208,7 +208,7 @@ This sentence might not fit fully in the space reserved for the element.]]></tex
 				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="145" y="7" width="1" height="1" isPrintWhenDetailOverflows="true" forecolor="#c0c0c0"/>
 				<graphicElement/>
 			</line>
-			<textField isStretchWithOverflow="true">
+			<textField textAdjust="StretchHeight">
 				<reportElement positionType="Float" x="170" y="7" width="100" height="0" isRemoveLineWhenBlank="true" forecolor="#c0c0c0"/>
 				<textElement textAlignment="Justified">
 					<font size="12"/>
@@ -229,21 +229,21 @@ This sentence might not fit fully in the space reserved for the element.]]></tex
 				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="425" y="4" width="130" height="4" isPrintWhenDetailOverflows="true"/>
 				<graphicElement/>
 			</rectangle>
-			<textField isStretchWithOverflow="true">
+			<textField textAdjust="StretchHeight">
 				<reportElement x="430" y="5" width="100" height="0" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Justified">
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA["This is a FIRST long chunk of text that will cause the text field to stretch outside its defined height and force other elements to move downwards."]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
+			<textField textAdjust="StretchHeight">
 				<reportElement positionType="Float" x="440" y="6" width="100" height="0" isRemoveLineWhenBlank="true" forecolor="#808080"/>
 				<textElement textAlignment="Justified">
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA["This is a SECOND long chunk of text that will cause the text field to stretch outside its defined height and force other elements to move downwards."]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
+			<textField textAdjust="StretchHeight">
 				<reportElement positionType="Float" x="450" y="7" width="100" height="0" isRemoveLineWhenBlank="true" forecolor="#c0c0c0"/>
 				<textElement textAlignment="Justified">
 					<font size="12"/>
@@ -260,21 +260,21 @@ This sentence might not fit fully in the space reserved for the element.]]></tex
 				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="285" y="5" width="1" height="3" isPrintWhenDetailOverflows="true"/>
 				<graphicElement/>
 			</line>
-			<textField isStretchWithOverflow="true">
+			<textField textAdjust="StretchHeight">
 				<reportElement x="290" y="5" width="100" height="0" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Justified">
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA["This is a FIRST long chunk of text that will cause the text field to stretch outside its defined height and force other elements to move downwards."]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
+			<textField textAdjust="StretchHeight">
 				<reportElement positionType="Float" x="300" y="6" width="100" height="0" isRemoveLineWhenBlank="true" forecolor="#808080"/>
 				<textElement textAlignment="Justified">
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA["This is a SECOND long chunk of text that will cause the text field to stretch outside its defined height and force other elements to move downwards."]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
+			<textField textAdjust="StretchHeight">
 				<reportElement positionType="Float" x="310" y="7" width="100" height="0" isRemoveLineWhenBlank="true" forecolor="#c0c0c0"/>
 				<textElement textAlignment="Justified">
 					<font size="12"/>
