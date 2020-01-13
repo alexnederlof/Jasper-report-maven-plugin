@@ -1,3 +1,7 @@
+# 2.7
+
+- Update to Jasper 6.11.0
+
 # 2.6
 
 - Update to Jasper 6.9.0
