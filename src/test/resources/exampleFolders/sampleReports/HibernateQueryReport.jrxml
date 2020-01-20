@@ -44,8 +44,9 @@
 			</line>
 			<textField isBlankWhenNull="true">
 				<reportElement style="Sans_Normal" x="0" y="10" width="515" height="30"/>
-				<textElement textAlignment="Center" lineSpacing="Single">
+				<textElement textAlignment="Center">
 					<font size="22"/>
+					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{ReportTitle}]]></textFieldExpression>
 			</textField>

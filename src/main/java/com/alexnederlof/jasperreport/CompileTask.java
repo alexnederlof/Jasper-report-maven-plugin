@@ -47,8 +47,7 @@ public class CompileTask implements Callable<Void> {
     }
 
     /**
-     * Compile the source file. If the source file doesn't have the right
-     * extension, it is skipped.
+     * Compile the source file.
      *
      * @return Debug output of the compile action.
      * @throws Exception when anything goes wrong while compiling.
