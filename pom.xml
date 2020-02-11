@@ -248,11 +248,11 @@
 	<repositories>
 		<repository>
 			<id>jasperreports</id>
-			<url>http://jasperreports.sourceforge.net/maven2</url>
+			<url>https://jasperreports.sourceforge.net/maven2</url>
 		</repository>
 		<repository>
 			<id>jaspersoft-third-party</id>
-			<url>http://jaspersoft.artifactoryonline.com/jaspersoft/third-party-ce-artifacts/</url>
+			<url>https://jaspersoft.artifactoryonline.com/jaspersoft/third-party-ce-artifacts/</url>
 		</repository>
 	</repositories>
 </project>
