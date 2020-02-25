@@ -54,12 +54,16 @@
 				</line>
 				<staticText>
 					<reportElement x="400" y="0" width="60" height="15" style="Sans_Bold"/>
-					<textElement textAlignment="Right" lineSpacing="Single"/>
+					<textElement textAlignment="Right">
+						<paragraph lineSpacing="Single"/>
+					</textElement>
 					<text>Count : </text>
 				</staticText>
 				<textField>
 					<reportElement x="460" y="0" width="30" height="15" style="Sans_Bold"/>
-					<textElement textAlignment="Right" lineSpacing="Single"/>
+					<textElement textAlignment="Right">
+						<paragraph lineSpacing="Single"/>
+					</textElement>
 					<textFieldExpression class="java.lang.Integer">
 						$V{CityGroup_COUNT}
 					</textFieldExpression>
@@ -82,8 +86,9 @@
 			</line>
 			<textField isBlankWhenNull="true">
 				<reportElement x="0" y="10" width="515" height="30" style="Sans_Normal"/>
-				<textElement textAlignment="Center" lineSpacing="Single">
+				<textElement textAlignment="Center">
 					<font size="22"/>
+					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String">$P{ReportTitle}</textFieldExpression>
 			</textField>
@@ -115,13 +120,13 @@
 					$F{Id}
 				</textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
+			<textField textAdjust="StretchHeight">
 				<reportElement x="55" y="4" width="200" height="15" positionType="Float"/>
 				<textFieldExpression class="java.lang.String">
 					$F{FirstName} + " " + $F{LastName}
 				</textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
+			<textField textAdjust="StretchHeight">
 				<reportElement x="260" y="4" width="255" height="15" positionType="Float"/>
 				<textFieldExpression class="java.lang.String">
 					$F{Street}
@@ -156,7 +161,7 @@
 	</pageFooter>
 	<summary>
 		<band height="60">
-			<textField isStretchWithOverflow="true">
+			<textField textAdjust="StretchHeight">
 				<reportElement x="175" y="20" width="165" height="15" style="Sans_Italic"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression class="java.lang.String">

@@ -245,7 +245,7 @@
 					<textElement/>
 					<text><![CDATA[Name]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="true">
+				<textField textAdjust="StretchHeight">
 					<reportElement positionType="Float" x="40" y="14" width="130" height="11"/>
 					<textElement/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{ShipName}]]></textFieldExpression>
@@ -255,7 +255,7 @@
 					<textElement/>
 					<text><![CDATA[City]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="true">
+				<textField textAdjust="StretchHeight">
 					<reportElement positionType="Float" x="40" y="26" width="130" height="11"/>
 					<textElement/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{ShipCity}]]></textFieldExpression>

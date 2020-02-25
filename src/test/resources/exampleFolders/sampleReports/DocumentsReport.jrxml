@@ -41,7 +41,7 @@
 				<textElement textAlignment="Right"/>
 				<textFieldExpression class="java.lang.Long"><![CDATA[$F{id}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" pattern="#.00">
+			<textField textAdjust="StretchHeight" pattern="#.00">
 				<reportElement positionType="Float" x="85" y="0" width="100" height="13"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression class="java.lang.Double"><![CDATA[$F{total}]]></textFieldExpression>

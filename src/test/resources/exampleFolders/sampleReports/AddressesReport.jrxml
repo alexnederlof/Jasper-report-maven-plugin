@@ -39,12 +39,12 @@
 			<band height="25">
 				<frame>
 					<reportElement mode="Opaque" x="0" y="0" width="375" height="21" backcolor="#E0E0E0"/>
-					<textField isStretchWithOverflow="true">
+					<textField textAdjust="StretchHeight">
 						<reportElement x="5" y="3" width="160" height="15"/>
 						<textElement/>
 						<textFieldExpression class="java.lang.String"><![CDATA[$F{firstName} + " " + $F{lastName} + " (ID: " + $F{id} + ")"]]></textFieldExpression>
 					</textField>
-					<textField isStretchWithOverflow="true">
+					<textField textAdjust="StretchHeight">
 						<reportElement x="210" y="3" width="160" height="15"/>
 						<textElement textAlignment="Right"/>
 						<textFieldExpression class="java.lang.String"><![CDATA[$F{street} + "," + $F{city}]]></textFieldExpression>
@@ -70,7 +70,7 @@
 					<textElement textAlignment="Right"/>
 					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{AddressGroup_COUNT}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" pattern="#.00">
+				<textField textAdjust="StretchHeight" pattern="#.00">
 					<reportElement style="Sans_Normal_Small" x="255" y="2" width="100" height="15"/>
 					<textElement textAlignment="Right"/>
 					<textFieldExpression class="java.lang.Double"><![CDATA[$V{addressTotal}]]></textFieldExpression>
@@ -85,8 +85,9 @@
 			</line>
 			<textField isBlankWhenNull="true">
 				<reportElement style="Sans_Normal" x="0" y="10" width="515" height="30"/>
-				<textElement textAlignment="Center" lineSpacing="Single">
+				<textElement textAlignment="Center">
 					<font size="22"/>
+					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{ReportTitle}]]></textFieldExpression>
 			</textField>
@@ -109,7 +110,7 @@
 				<textElement/>
 				<text><![CDATA[Document Total]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true" pattern="#.00">
+			<textField textAdjust="StretchHeight" pattern="#.00">
 				<reportElement style="Sans_Normal_Small" x="255" y="0" width="100" height="12"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression class="java.lang.Double"><![CDATA[$F{documentTotal}]]></textFieldExpression>
