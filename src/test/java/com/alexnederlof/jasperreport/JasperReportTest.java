@@ -188,22 +188,34 @@ public class JasperReportTest extends AbstractMojoTestCase {
 				.indexOf(suffix));
 	}
 
+    /**
+     * Test that an invalid Jasper file should stop the build completely by throwing an
+     * {@link MojoExecutionException}.
+     *
+     * @throws Exception
+     *             When an unexpected error occurs.
+     */
+    public void testInvalidFilesStopBuild() throws Exception {
+        setupSourceAndDestinationFolder("/brokenReports", "/brokenReports_out");
+        try {
+            getAndExecuteMojo(getBasedir() + "/src/test/resources/testBrokenReportsPom.xml");
+            fail("An exception should have been thrown");
+        }
+        catch (MojoExecutionException e) {
+            assertEquals(JasperReporter.ERROR_JRE_COMPILE_ERROR, e.getMessage());
+        }
+    }
+
 	/**
-	 * Test that an invalid Jasper file should stop the build completely by throwing an
-	 * {@link MojoExecutionException}.
+	 * Test that skipping the plugin does not compile any Jasper file.
 	 *
-	 * @throws Exception
-	 *             When an unexpected error occurs.
+     * @throws Exception
+     *             When an unexpected error occurs.
 	 */
-	public void testInvalidFilesStopBuild() throws Exception {
-		setupSourceAndDestinationFolder("/brokenReports", "/brokenReports_out");
-		try {
-			getAndExecuteMojo(getBasedir() + "/src/test/resources/testBrokenReportsPom.xml");
-			fail("An exception should have been thrown");
-		}
-		catch (MojoExecutionException e) {
-			assertEquals(JasperReporter.ERROR_JRE_COMPILE_ERROR, e.getMessage());
-		}
+	public void testSkipDoesntCompile() throws Exception {
+		setupSourceAndDestinationFolder("/sampleReports", "/skipReports_out");
+		getAndExecuteMojo(getBasedir() + "/src/test/resources/testSkipSampleReportsPom.xml");
+        assertFalse("Output folder should not exist", destinationFolder.exists());
 	}
 
 	/**

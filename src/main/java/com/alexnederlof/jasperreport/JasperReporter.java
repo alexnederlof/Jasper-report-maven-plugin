@@ -97,6 +97,13 @@ public class JasperReporter extends AbstractMojo {
 	private boolean xmlValidation;
 
 	/**
+     * Set this to "true" to bypass compiling reports. Default value is false.
+     *
+     */
+    @Parameter( defaultValue = "false" )
+    private boolean skip;
+
+	/**
 	 * If verbose is on the plug-in will report which reports it is compiling
 	 * and which files are being skipped.
 	 *
@@ -183,7 +190,13 @@ public class JasperReporter extends AbstractMojo {
 	public void execute() throws MojoExecutionException {
 		log = getLog();
 
-		if (verbose) {
+        if ( isSkip() )
+        {
+            log.info( "Compiling Jasper reports is skipped." );
+            return;
+        }
+
+        if (verbose) {
 			logConfiguration(log);
 		}
 
@@ -436,4 +449,9 @@ public class JasperReporter extends AbstractMojo {
 			throw new MojoExecutionException("sourceScanner not supported: \'" + sourceScanner + "\'.");
 		}
 	}
+
+    private boolean isSkip()
+    {
+        return skip;
+    }
 }
