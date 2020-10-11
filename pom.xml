@@ -252,7 +252,7 @@
 		</repository>
 		<repository>
 			<id>jaspersoft-third-party</id>
-			<url>https://jaspersoft.artifactoryonline.com/jaspersoft/third-party-ce-artifacts/</url>
+			<url>http://jaspersoft.artifactoryonline.com/jaspersoft/third-party-ce-artifacts/</url>
 		</repository>
 	</repositories>
 </project>
