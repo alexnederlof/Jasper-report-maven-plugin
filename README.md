@@ -3,6 +3,11 @@ JasperReports-plugin
 
 This maven compiles Jasper files to the target directory. 
 
+# 👋 This plugin is up for adoption 
+I've not used this plugin myself in years, so I'd like to hand this project over
+to people who actually use it. If you are interested, please open an issue to
+reach me. - Alex
+
 Motivation
 ----------
 The original jasperreports-maven-plugin from org.codehaus.mojo was a bit slow. This plugin is 10x faster. I tested it with 52 reports which took 48 seconds with the original plugin and only 4.7 seconds with this plugin.
