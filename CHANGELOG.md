@@ -1,6 +1,9 @@
 # 2.7
 
-- Update to Jasper 6.11.0
+- Update to Jasper 6.15 
+- Other dependency updates
+- [Ability to <skip> the compilation](https://github.com/alexnederlof/Jasper-report-maven-plugin/pull/69)
+- [Set default threads to the number of processors](https://github.com/alexnederlof/Jasper-report-maven-plugin/commit/ccde203ebdf3648e4be0b84647da26d71937e860)  
 
 # 2.6
 
