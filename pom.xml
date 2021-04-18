@@ -252,11 +252,12 @@
 		</repository>
 		<repository>
 			<id>jasperreports</id>
-			<url>https://jasperreports.sourceforge.net/maven2</url>
+			<url>https://jaspersoft.jfrog.io/jaspersoft/jr-ce-releases</url>
 		</repository>
 		<repository>
 			<id>jaspersoft-third-party</id>
 			<url>https://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/</url>
 		</repository>
 	</repositories>
+	
 </project>
