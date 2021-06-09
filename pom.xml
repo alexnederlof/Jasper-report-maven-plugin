@@ -252,11 +252,11 @@
 		</repository>
 		<repository>
 			<id>jasperreports</id>
-			<url>https://jaspersoft.jfrog.io/jaspersoft/jr-ce-releases</url>
+			<url>https://jaspersoft.jfrog.io/artifactory/jrs-ce-releases/</url>
 		</repository>
 		<repository>
 			<id>jaspersoft-third-party</id>
-			<url>https://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/</url>
+			<url>https://jaspersoft.jfrog.io/artifactory/third-party-ce-artifacts/</url>
 		</repository>
 	</repositories>
 	
