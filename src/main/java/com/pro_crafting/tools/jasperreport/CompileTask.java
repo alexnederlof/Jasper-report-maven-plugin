@@ -1,5 +1,7 @@
 package com.pro_crafting.tools.jasperreport;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more contributor license
  * agreements. See the NOTICE file distributed with this work for additional information regarding
@@ -13,6 +15,7 @@ package com.pro_crafting.tools.jasperreport;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.Callable;
@@ -54,7 +57,8 @@ public class CompileTask implements Callable<Void> {
      */
     @Override
     public Void call() throws Exception {
-        try (OutputStream out = new FileOutputStream(destination); InputStream in = new FileInputStream(source)) {
+        try (OutputStream out = new BufferedOutputStream(new FileOutputStream(destination));
+             InputStream in = new BufferedInputStream(new FileInputStream(source))) {
             JasperCompileManager.compileReportToStream(in, out);
             if (verbose) {
                 log.info("Compiling " + source.getName());
@@ -72,4 +76,5 @@ public class CompileTask implements Callable<Void> {
         }
         throw new JRException("Could not compile " + source.getName(), e);
     }
+
 }
