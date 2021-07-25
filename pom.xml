@@ -21,6 +21,8 @@
 	<properties>
 		<!-- Settings -->
 		<maven.compiler.release>8</maven.compiler.release>
+		<tikari.version>3.0.1</tikari.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<!-- Dependency Versions -->
@@ -103,9 +105,17 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.maven.shared</groupId>
-			<artifactId>maven-plugin-testing-harness</artifactId>
-			<version>${version.maven-plugin-testing-harness}</version>
+			<groupId>io.takari.maven.plugins</groupId>
+			<artifactId>takari-plugin-integration-testing</artifactId>
+			<version>${tikari.version}</version>
+			<type>pom</type>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>io.takari.maven.plugins</groupId>
+			<artifactId>takari-plugin-testing</artifactId>
+			<version>${tikari.version}</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -175,6 +185,21 @@
 						<version>${version.maven-surefire-plugin}</version>
 					</dependency>
 				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>io.takari.maven.plugins</groupId>
+				<artifactId>takari-lifecycle-plugin</artifactId>
+				<version>2.1.1</version>
+				<extensions>true</extensions>
+				<executions>
+					<execution>
+						<id>testProperties</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>testProperties</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
