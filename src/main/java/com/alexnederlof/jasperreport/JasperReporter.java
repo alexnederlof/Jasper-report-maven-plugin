@@ -22,8 +22,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRException;
@@ -409,10 +412,11 @@ public class JasperReporter extends AbstractMojo {
 	}
 
 	private void executeTasks(List<CompileTask> tasks) throws MojoExecutionException {
+		ExecutorService threadPool = newThreadPool();
 		try {
 			long t1 = System.currentTimeMillis();
 			List<Future<Void>> output =
-					Executors.newFixedThreadPool(numberOfThreads).invokeAll(tasks);
+					threadPool.invokeAll(tasks);
 			long time = (System.currentTimeMillis() - t1);
 			log.info("Generated " + output.size() + " jasper reports in " + (time / 1000.0) + " seconds");
 			checkForExceptions(output);
@@ -429,6 +433,13 @@ public class JasperReporter extends AbstractMojo {
 				throw new MojoExecutionException("Error while compiling Jasper reports", e);
 			}
 		}
+		finally {
+			threadPool.shutdown();
+		}
+	}
+
+	private ExecutorService newThreadPool() {
+		return Executors.newFixedThreadPool(numberOfThreads, new JasperReporterThreadFactory());
 	}
 
 	private void checkForExceptions(List<Future<Void>> output) throws InterruptedException, ExecutionException {
@@ -454,4 +465,20 @@ public class JasperReporter extends AbstractMojo {
     {
         return skip;
     }
+
+	/**
+	 * Thread factory the compile threads. Sets the thread name and marks it as a daemon thread.
+	 */
+	private static final class JasperReporterThreadFactory implements ThreadFactory {
+
+		private static final AtomicInteger THREAD_COUNTER = new AtomicInteger();
+
+		@Override
+		public Thread newThread(Runnable r) {
+			Thread thread = new Thread(r, "jasper-compiler-" + THREAD_COUNTER.incrementAndGet());
+			thread.setDaemon(true);
+			return thread;
+		}
+
+	}
 }
