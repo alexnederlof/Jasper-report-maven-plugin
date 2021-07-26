@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRPropertiesUtil;
+import net.sf.jasperreports.engine.JRReport;
 import net.sf.jasperreports.engine.design.JRCompiler;
 import net.sf.jasperreports.engine.design.JRJdtCompiler;
 import net.sf.jasperreports.engine.xml.JRReportSaxParserFactory;
@@ -306,7 +307,7 @@ public class JasperReporter extends AbstractMojo {
 		DefaultJasperReportsContext jrContext = DefaultJasperReportsContext.getInstance();
 
 		jrContext.setProperty(JRReportSaxParserFactory.COMPILER_XML_VALIDATION, String.valueOf(xmlValidation));
-		jrContext.setProperty(JRCompiler.COMPILER_PREFIX, compiler == null ? JRJdtCompiler.class.getName() : compiler);
+		jrContext.setProperty(JRCompiler.COMPILER_PREFIX + JRReport.LANGUAGE_JAVA, compiler == null ? JRJdtCompiler.class.getName() : compiler);
 
 		if (additionalProperties != null) {
 			configureAdditionalProperties(JRPropertiesUtil.getInstance(jrContext));
