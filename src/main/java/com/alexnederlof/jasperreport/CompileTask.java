@@ -27,6 +27,7 @@ import org.apache.maven.plugin.logging.Log;
  */
 public class CompileTask implements Callable<Void> {
 
+    private final JasperCompileManager compileManager;
     private final File source;
     private final File destination;
     private final Log log;
@@ -38,8 +39,9 @@ public class CompileTask implements Callable<Void> {
      * @param log The logger.
      * @param verbose If the output should be verbose.
      */
-    CompileTask(File source, File destination, Log log, boolean verbose) {
+    CompileTask(JasperCompileManager compileManager, File source, File destination, Log log, boolean verbose) {
         super();
+        this.compileManager = compileManager;
         this.source = source;
         this.destination = destination;
         this.log = log;
@@ -55,7 +57,7 @@ public class CompileTask implements Callable<Void> {
     @Override
     public Void call() throws Exception {
         try (OutputStream out = new FileOutputStream(destination); InputStream in = new FileInputStream(source)) {
-            JasperCompileManager.compileReportToStream(in, out);
+            compileManager.compileToStream(in, out);
             if (verbose) {
                 log.info("Compiling " + source.getName());
             }
