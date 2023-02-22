@@ -1,0 +1,16 @@
+name: Pull Request CI
+
+on: [pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: graalvm/setup-graalvm@v1
+      with:
+        version: 'mandrel-latest'
+        java-version: '17'
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Maven build
+      run: mvn -B install -Pnative

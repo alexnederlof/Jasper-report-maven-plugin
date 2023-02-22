@@ -1,18 +1,25 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.alexnederlof</groupId>
+
+	<parent>
+		<groupId>com.pro-crafting</groupId>
+		<artifactId>pc-parent</artifactId>
+		<version>11</version>
+	</parent>
+
+	<groupId>com.pro-crafting.tools</groupId>
 	<artifactId>jasperreports-plugin</artifactId>
 
 	<packaging>maven-plugin</packaging>
-	<version>2.9-SNAPSHOT</version>
+	<version>3.0.0-SNAPSHOT</version>
+
 	<name>jasperreport-plugin</name>
 	<description>A Jasper compiler plugin</description>
-	<url>http://github.com/alexnederlof/Jasper-report-maven-plugin</url>
+	<url>https://github.com/pro-crafting/Jasper-report-maven-plugin</url>
 
 
 	<properties>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.release>8</maven.compiler.release>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
@@ -22,18 +29,11 @@
 	</prerequisites>
 
 	<scm>
-		<connection>scm:git:git@github.com:alexnederlof/Jasper-report-maven-plugin.git</connection>
-		<url>http://github.com/alexnederlof/Jasper-report-maven-plugin</url>
-		<developerConnection>scm:git:git@github.com:alexnederlof/Jasper-report-maven-plugin.git</developerConnection>
+		<connection>scm:git:git@github.com:pro-crafting/Jasper-report-maven-plugin.git</connection>
+		<url>https://github.com/pro-crafting/Jasper-report-maven-plugin</url>
+		<developerConnection>scm:git:git@github.com:pro-crafting/Jasper-report-maven-plugin.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
-
-	<distributionManagement>
-		<snapshotRepository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
 
 
 	<developers>
@@ -67,6 +67,13 @@
 			<id>bwiedmann</id>
 			<name>Benjamin Wiedmann</name>
 			<email>github@wied.it</email>
+		</developer>
+
+		<developer>
+			<id>Postremus</id>
+			<name>Martin Panzer</name>
+			<email>postremus1996@googlemail.com</email>
+			<timezone>+2</timezone>
 		</developer>
 	</developers>
 
@@ -142,27 +149,6 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.22.0</version>
-				<configuration>
-					<useFile>false</useFile>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>3.0.1</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar-no-fork</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>3.0.1</version>
 				<executions>
@@ -194,17 +180,6 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.8</version>
-				<extensions>true</extensions>
-				<configuration>
-					<serverId>ossrh</serverId>
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>true</autoReleaseAfterClose>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-plugin-plugin</artifactId>
 				<version>3.5.2</version>
@@ -212,52 +187,20 @@
 		</plugins>
 	</build>
 
-	<profiles>
-		<profile>
-			<id>release</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.6</version>
-						<executions>
-							<execution>
-								<id>sign-artifacts</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-
-
-	<licenses>
-		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-
 	<repositories>
-		<repository>
-			<id>main</id>
-			<url>https://repo.maven.apache.org/maven2/</url>
-		</repository>
-		<repository>
-			<id>jasperreports</id>
-			<url>https://jaspersoft.jfrog.io/jaspersoft/jr-ce-releases</url>
-		</repository>
 		<repository>
 			<id>jaspersoft-third-party</id>
 			<url>https://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/</url>
 		</repository>
+		<repository>
+			<id>jr-ce-snapshots</id>
+			<name>JasperReports CE Snapshots</name>
+			<url>https://jaspersoft.jfrog.io/jaspersoft/jr-ce-snapshots</url>
+		</repository>
+		<repository>
+			<id>jr-ce-releases</id>
+			<name>JasperReports CE Releases</name>
+			<url>https://jaspersoft.jfrog.io/jaspersoft/jr-ce-releases</url>
+		</repository>
 	</repositories>
-	
 </project>

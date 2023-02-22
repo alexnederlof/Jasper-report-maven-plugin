@@ -1,0 +1,37 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          version: 'mandrel-latest'
+          java-version: '17'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Maven build
+        env:
+          DOCKER_IO_TOKEN: ${{ secrets.DOCKER_IO_TOKEN }}
+          DOCKER_IO_USERNAME: ${{ secrets.DOCKER_IO_USERNAME }}
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
+          GPG_KEY_NAME: ${{ secrets.GPG_KEY_NAME }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          MAVEN_SIGNING_KEY: ${{ secrets.MAVEN_SIGNING_KEY }}
+        run: |
+          echo "$MAVEN_SIGNING_KEY" > MAVEN_SIGNING_KEY_FILE.base64
+          base64 --decode MAVEN_SIGNING_KEY_FILE.base64 > MAVEN_SIGNING_KEY_FILE.bin
+          gpg --batch --fast-import MAVEN_SIGNING_KEY_FILE.bin
+          mvn -Dquarkus.container-image.push=true -Dquarkus.container-image.username=$DOCKER_IO_USERNAME -Dquarkus.container-image.password=$DOCKER_IO_TOKEN deploy -s cd/settings.xml -P sign,native
+      - name: Sonar
+        env:
+          SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mvn org.jacoco:jacoco-maven-plugin:prepare-agent org.apache.maven.plugins:maven-surefire-plugin:test org.sonarsource.scanner.maven:sonar-maven-plugin:sonar

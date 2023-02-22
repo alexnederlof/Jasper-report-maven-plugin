@@ -1,3 +1,8 @@
+# 3.0
+
+- Move plugin to pro-crafting.
+- No other changes planned for this release. This one is intended for a clean migration.
+
 # 2.8
 
 - Update to Jasper 6.15 
