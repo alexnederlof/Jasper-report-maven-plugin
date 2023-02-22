@@ -1,12 +1,16 @@
 JasperReports-plugin
 =============
 
-This maven compiles Jasper files to the target directory. 
+This maven plugin compiles Jasper files to the target directory. 
 
-# 👋 This plugin is up for adoption 
-I've not used this plugin myself in years, so I'd like to hand this project over
-to people who actually use it. If you are interested, please open an issue to
-reach me. - Alex
+Migration to version 3
+----------
+
+@alexnederlof is the original author of the plugin, but has not used it in years. The plugin got adopted by me (@Postremus) and migrated to the pro-crafting organization.
+Main goal of the adoption is to always provide a version for the latest jasperreports release.
+
+For this reason, when migrating from jasperreports-plugin 2.8 to 3.0, you will need to change the plugins groupdid, as outlined in section [Usage](#usage)
+
 
 Motivation
 ----------
@@ -20,7 +24,7 @@ You can use the plugin by adding it to the plug-in section in your pom;
 <build>
 	<plugins>
 		<plugin>
-			<groupId>com.alexnederlof</groupId>
+			<groupId>com.pro-crafting.tools</groupId>
 			<artifactId>jasperreports-plugin</artifactId>
 			<version>2.8</version>
 			<executions>
