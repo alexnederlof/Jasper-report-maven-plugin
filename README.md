@@ -6,10 +6,10 @@ This maven plugin compiles Jasper files to the target directory.
 Migration to version 3
 ----------
 
-alexnederlof is the original author of the plugin, but has not used it in years. The plugin got adopted by me (Postremus) and migrated to the pro-crafting organization.
-Main goal of the adoption is to always provide a version for the latest jasperreports release.
+[alexnederlof](https://github.com/alexnederlof) is the original author of this plugin, but has not used it in years. The plugin got adopted by me ([Postremus](https://github.com/Postremus)) and migrated to the pro-crafting organization.
+Main goal of the adoption is to always provide a version for the latest JasperReports release.
 
-For this reason, when migrating from jasperreports-plugin 2.8 to 3.0, you will need to follow these steps:
+For this reason, when migrating from jasperreports-plugin 2.8 to 3.0, you will need to keep these things in mind:
 
 1. First, you will need to change the groupdId in the plugin definition, as outlined in section [Usage](#usage)
 2. Second, the plugin now gets compiled using jdk 17. Compatibility with java 1.8 is ensured, since the CI built forces an `--release 8` flag. If any problems arise though, please let me know by opening an issue - we can always adjust that.
@@ -20,7 +20,7 @@ The original jasperreports-maven-plugin from org.codehaus.mojo was a bit slow. T
 
 Usage
 -----
-You can use the plugin by adding it to the plug-in section in your pom;
+You can use the plugin by adding it to the plug-in section in your pom:
 
 ```xml
 <build>
@@ -52,6 +52,17 @@ You can use the plugin by adding it to the plug-in section in your pom;
 		</plugin>
 	</plugins>
 </build>
+```
+
+You might also need to add the following repositories section to your pom in order to correctly resolve all dependencies:
+
+```xml
+<repositories>
+    <repository>
+        <id>jaspersoft-third-party</id>
+        <url>https://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/</url>
+    </repository>
+</repositories>
 ```
 
 If you want to pass any Jasper options to the compiler you can do so by adding them to the configuration like so:
@@ -97,3 +108,11 @@ You can also use this alternative approach for JARs:
 </plugin>
 ```
 
+JasperReports Compatibility
+-----
+
+The following table shows which version of JasperReports is used for compilation for each plugin version
+
+| Plugin Version | JasperReports Version |
+|----------------|-----------------------|
+| 3.0.0          | 6.15.0                |
