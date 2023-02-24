@@ -1,1 +1,3 @@
-To deploy, use `mvn clean deploy -P release`
+For local builds, use `mvnw clean install`.
+
+For deployment, use `mvnw release:prepare`.

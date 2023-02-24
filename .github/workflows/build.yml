@@ -25,10 +25,10 @@ jobs:
           echo "$MAVEN_SIGNING_KEY" > MAVEN_SIGNING_KEY_FILE.base64
           base64 --decode MAVEN_SIGNING_KEY_FILE.base64 > MAVEN_SIGNING_KEY_FILE.bin
           gpg --batch --fast-import MAVEN_SIGNING_KEY_FILE.bin
-          mvn deploy -s cd/settings.xml -P sign,native
+          ./mvnw deploy -s cd/settings.xml -P sign
       - name: Sonar
         env:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          mvn org.jacoco:jacoco-maven-plugin:prepare-agent org.apache.maven.plugins:maven-surefire-plugin:test org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+          ./mvnw org.jacoco:jacoco-maven-plugin:prepare-agent org.apache.maven.plugins:maven-surefire-plugin:test org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
