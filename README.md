@@ -1,3 +1,6 @@
+[![Version](https://img.shields.io/maven-central/v/com.pro-crafting.tools/jasperreports-plugin?logo=apache-maven&style=for-the-badge)](https://search.maven.org/artifact/com.pro-crafting.tools/jasperreports-pluginm)
+[![GitHub Actions Status](<https://img.shields.io/github/actions/workflow/status/pro-crafting/Jasper-report-maven-plugin/build.yml?branch=main&logo=GitHub&style=for-the-badge>)](https://github.com/pro-crafting/Jasper-report-maven-plugin/actions/workflows/build.yml)
+
 JasperReports-plugin
 =============
 
@@ -12,7 +15,7 @@ Main goal of the adoption is to always provide a version for the latest JasperRe
 For this reason, when migrating from jasperreports-plugin 2.8 to 3.0, you will need to keep these things in mind:
 
 1. First, you will need to change the groupdId in the plugin definition, as outlined in section [Usage](#usage)
-2. Second, the plugin now gets compiled using jdk 17. Compatibility with java 1.8 is ensured, since the CI built forces an `--release 8` flag. If any problems arise though, please let me know by opening an issue - we can always adjust that.
+2. Second, the plugin now gets compiled using jdk 17. Compatibility with java 1.8 is ensured, since the CI build now forces an `--release 8` flag. If any problems arise though, please let me know by opening an issue - we can always adjust that.
 
 Motivation
 ----------
