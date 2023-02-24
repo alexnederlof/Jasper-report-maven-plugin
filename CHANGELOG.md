@@ -1,3 +1,7 @@
+# 3.1.0
+
+- Integrate with m2e. This fixes the "plugin execution not covered by a lifecycle configuration" message in eclipse.
+
 # 3.0
 
 - Move plugin to pro-crafting.
