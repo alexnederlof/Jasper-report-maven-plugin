@@ -31,7 +31,7 @@ You can use the plugin by adding it to the plug-in section in your pom:
 		<plugin>
 			<groupId>com.pro-crafting.tools</groupId>
 			<artifactId>jasperreports-plugin</artifactId>
-			<version>3.0.0</version>
+			<version>3.2.0</version>
 			<executions>
 				<execution>
 					<phase>process-sources</phase>
@@ -120,3 +120,4 @@ The following table shows which version of JasperReports is used for compilation
 |----------------|-----------------------|
 | 3.0.0          | 6.15.0                |
 | 3.1.0          | 6.16.0                |
+| 3.2.0          | 6.17.0                |

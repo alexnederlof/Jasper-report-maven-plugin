@@ -1,3 +1,7 @@
+# 3.2.0
+
+- Update to Jasper 6.17.0
+
 # 3.1.0
 
 - Integrate with m2e. This fixes the "plugin execution not covered by a lifecycle configuration" message in eclipse.
