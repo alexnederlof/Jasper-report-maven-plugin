@@ -122,3 +122,4 @@ The following table shows which version of JasperReports is used for compilation
 | 3.1.0          | 6.16.0                |
 | 3.2.0          | 6.17.0                |
 | 3.3.0          | 6.18.0                |
+| 3.3.1          | 6.18.1                |
