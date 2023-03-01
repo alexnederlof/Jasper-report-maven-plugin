@@ -3,9 +3,9 @@ JasperReports-plugin
 
 This maven compiles Jasper files to the target directory. 
 
-👋 This plugin is no longer maintained by me, but @Postremus is continuing the project
+⚠️ __This plugin is no longer maintained by me, but @Postremus is continuing the project
 over at https://github.com/pro-crafting/Jasper-report-maven-plugin. If you're an active
-user, please switch over to that version for continued updates.
+user, please switch over to that version for continued updates.__ ⚠️ 
 
 Motivation
 ----------
