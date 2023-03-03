@@ -33,7 +33,7 @@
 		<version.maven-plugin-api>3.5.2</version.maven-plugin-api>
 		<version.junit>4.13.2</version.junit>
 		<version.maven-plugin-testing-harness>1.1</version.maven-plugin-testing-harness>
-		<version.plexus-utils>3.5.0</version.plexus-utils>
+		<version.plexus-utils>3.5.1</version.plexus-utils>
 
 		<!-- Plugin Versions -->
 		<version.maven-plugin-plugin>3.5.2</version.maven-plugin-plugin>
