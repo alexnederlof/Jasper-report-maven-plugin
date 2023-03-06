@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.pro-crafting</groupId>
 		<artifactId>pc-parent</artifactId>
-		<version>11</version>
+		<version>12</version>
 	</parent>
 
 	<groupId>com.pro-crafting.tools</groupId>
