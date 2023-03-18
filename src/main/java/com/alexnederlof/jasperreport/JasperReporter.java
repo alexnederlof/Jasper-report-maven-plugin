@@ -28,6 +28,8 @@ import java.util.concurrent.Future;
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRPropertiesUtil;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.design.JRCompiler;
 import net.sf.jasperreports.engine.design.JRJdtCompiler;
 import net.sf.jasperreports.engine.xml.JRReportSaxParserFactory;
@@ -299,8 +301,8 @@ public class JasperReporter extends AbstractMojo {
 		}
 	}
 
-	private void configureJasper() {
-		DefaultJasperReportsContext jrContext = DefaultJasperReportsContext.getInstance();
+	private JasperReportsContext configureJasper() {
+		JasperReportsContext jrContext = DefaultJasperReportsContext.getInstance();
 
 		jrContext.setProperty(JRReportSaxParserFactory.COMPILER_XML_VALIDATION, String.valueOf(xmlValidation));
 		jrContext.setProperty(JRCompiler.COMPILER_PREFIX, compiler == null ? JRJdtCompiler.class.getName() : compiler);
@@ -309,6 +311,7 @@ public class JasperReporter extends AbstractMojo {
 		if (additionalProperties != null) {
 			configureAdditionalProperties(JRPropertiesUtil.getInstance(jrContext));
 		}
+		return jrContext;
 	}
 
 	private ClassLoader getClassLoader(ClassLoader classLoader)
@@ -378,13 +381,14 @@ public class JasperReporter extends AbstractMojo {
 		List<CompileTask> tasks = new LinkedList<>();
 		try {
 			String root = sourceDirectory.getCanonicalPath();
+			JasperCompileManager compileManager = JasperCompileManager.getInstance(configureJasper());
 
 			for (File src : sources) {
 				String srcName = getRelativePath(root, src);
 				try {
 					File destination = mapping.getTargetFiles(outputDirectory, srcName).iterator().next();
 					createDestination(destination.getParentFile());
-					tasks.add(new CompileTask(src, destination, log, verbose));
+					tasks.add(new CompileTask(compileManager, src, destination, log, verbose));
 				}
 				catch (InclusionScanException e) {
 					throw new MojoExecutionException("Error compiling report design : " + src, e);
