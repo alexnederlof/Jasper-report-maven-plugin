@@ -25,10 +25,8 @@
 
 		<!-- Dependency Versions -->
 		<version.jasperreports>6.20.1</version.jasperreports>
-		<version.slf4j>1.7.30</version.slf4j>
+		<version.slf4j>1.7.36</version.slf4j>
 		<version.plexus-compiler-api>2.13.0</version.plexus-compiler-api>
-		<version.javax.servlet-api>4.0.1</version.javax.servlet-api>
-		<version.commons-lang>2.6</version.commons-lang>
 		<version.maven-plugin-annotations>3.5.2</version.maven-plugin-annotations>
 		<version.maven-plugin-api>3.5.2</version.maven-plugin-api>
 		<version.junit>4.13.2</version.junit>
@@ -127,11 +125,6 @@
 			<version>${version.jasperreports}</version>
 		</dependency>
 		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>${version.commons-lang}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>
 			<version>${version.maven-plugin-api}</version>
@@ -152,11 +145,6 @@
 			<groupId>org.codehaus.plexus</groupId>
 			<artifactId>plexus-compiler-api</artifactId>
 			<version>${version.plexus-compiler-api}</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>${version.javax.servlet-api}</version>
 		</dependency>
 	</dependencies>
 
