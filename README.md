@@ -132,10 +132,11 @@ You can also use this alternative approach for JARs:
 JasperReports Compatibility
 -----
 
-The following table shows which JasperReports version is included during compilation of each plugin version
+The following table shows which JasperReports version is included during compilation of each plugin version:
 
 | Plugin Version | JasperReports Version |
 |----------------|-----------------------|
+| 3.5.4          | 6.20.3                |
 | 3.5.3          | 6.20.2                |
 | 3.5.1          | 6.20.1                |
 | 3.5.0          | 6.20.0                |
