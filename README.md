@@ -21,7 +21,7 @@ Motivation
 ----------
 The original jasperreports-maven-plugin from org.codehaus.mojo was a bit slow. This plugin is 10x faster. I tested it with 52 reports which took 48 seconds with the original plugin and only 4.7 seconds with this plugin.
 
-Usage
+Installation
 -----
 You can use the plugin by adding it to the plug-in section in your pom:
 
@@ -68,6 +68,24 @@ You might also need to add the following repositories section to your pom in ord
 </repositories>
 ```
 
+If you are exporting pdfs, you need to prive the dependency on openpdf yourself starting with JasperReports 6.20.2.
+See also issue [#351](https://github.com/TIBCOSoftware/jasperreports/issues/351) in the JasperReports repository.
+
+This plugin already provides the openpdf library - you won't have to add it for compilation of your reports.
+However, the library needs to be present during report execution/filling time, e.g. it needs to be added to your deployed application.
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>com.github.librepdf</groupId>
+        <artifactId>openpdf</artifactId>
+        <version>1.3.30.jaspersoft.2</version>
+    </dependency>
+</dependencies>
+```
+
+Usage
+-----
 If you want to pass any Jasper options to the compiler you can do so by adding them to the configuration like so:
 
 ```xml
@@ -114,10 +132,11 @@ You can also use this alternative approach for JARs:
 JasperReports Compatibility
 -----
 
-The following table shows which version of JasperReports is used for compilation for each plugin version
+The following table shows which JasperReports version is included during compilation of each plugin version
 
 | Plugin Version | JasperReports Version |
 |----------------|-----------------------|
+| 3.5.2          | 6.20.2                |
 | 3.5.1          | 6.20.1                |
 | 3.5.0          | 6.20.0                |
 | 3.4.1          | 6.19.1                |

@@ -24,7 +24,9 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<!-- Dependency Versions -->
-		<version.jasperreports>6.20.1</version.jasperreports>
+		<version.jasperreports>6.20.2</version.jasperreports>
+		<version.openpdf>1.3.30.jaspersoft.2</version.openpdf> <!-- Needs to match version used in jasper -->
+
 		<version.slf4j>1.7.36</version.slf4j>
 		<version.plexus-compiler-api>2.13.0</version.plexus-compiler-api>
 		<version.maven-plugin-annotations>3.5.2</version.maven-plugin-annotations>
@@ -124,6 +126,18 @@
 			<artifactId>jasperreports-fonts</artifactId>
 			<version>${version.jasperreports}</version>
 		</dependency>
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports-functions</artifactId>
+			<version>${version.jasperreports}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.librepdf</groupId>
+			<artifactId>openpdf</artifactId>
+			<version>${version.openpdf}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>
