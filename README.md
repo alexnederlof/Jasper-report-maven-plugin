@@ -136,7 +136,7 @@ The following table shows which JasperReports version is included during compila
 
 | Plugin Version | JasperReports Version |
 |----------------|-----------------------|
-| 3.5.2          | 6.20.2                |
+| 3.5.3          | 6.20.2                |
 | 3.5.1          | 6.20.1                |
 | 3.5.0          | 6.20.0                |
 | 3.4.1          | 6.19.1                |
