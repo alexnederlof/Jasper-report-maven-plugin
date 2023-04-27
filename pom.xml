@@ -44,9 +44,9 @@
 	</prerequisites>
 
 	<scm>
-		<connection>scm:git:git@github.com:pro-crafting/Jasper-report-maven-plugin.git</connection>
+		<connection>scm:git:https://github.com/pro-crafting/Jasper-report-maven-plugin.git</connection>
 		<url>https://github.com/pro-crafting/Jasper-report-maven-plugin</url>
-		<developerConnection>scm:git:git@github.com:pro-crafting/Jasper-report-maven-plugin.git</developerConnection>
+		<developerConnection>scm:git:https://github.com/pro-crafting/Jasper-report-maven-plugin.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 
