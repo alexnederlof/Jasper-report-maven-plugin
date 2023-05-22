@@ -13,6 +13,8 @@
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.version>3.6.3</maven.version>
+		<tikari.version>3.0.0</tikari.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
@@ -78,9 +80,17 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.maven.shared</groupId>
-			<artifactId>maven-plugin-testing-harness</artifactId>
-			<version>1.1</version>
+			<groupId>io.takari.maven.plugins</groupId>
+			<artifactId>takari-plugin-integration-testing</artifactId>
+			<version>${tikari.version}</version>
+			<type>pom</type>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>io.takari.maven.plugins</groupId>
+			<artifactId>takari-plugin-testing</artifactId>
+			<version>${tikari.version}</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -105,8 +115,14 @@
 
 		<dependency>
 			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-core</artifactId>
+			<version>${maven.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>
-			<version>3.6.3</version>
+			<version>${maven.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven.plugin-tools</groupId>
@@ -147,6 +163,21 @@
 				<configuration>
 					<useFile>false</useFile>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>io.takari.maven.plugins</groupId>
+				<artifactId>takari-lifecycle-plugin</artifactId>
+				<version>2.0.0</version>
+				<extensions>true</extensions>
+				<executions>
+					<execution>
+						<id>testProperties</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>testProperties</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
