@@ -68,7 +68,7 @@ You might also need to add the following repositories section to your pom in ord
 </repositories>
 ```
 
-If you are exporting pdfs, you need to prive the dependency on openpdf yourself starting with JasperReports 6.20.2.
+JasperReports Version 6.20.2 and 6.20.3 does not include the dependency for exporting pdfs. It needs to be provided by the user.
 See also issue [#351](https://github.com/TIBCOSoftware/jasperreports/issues/351) in the JasperReports repository.
 
 This plugin already provides the openpdf library - you won't have to add it for compilation of your reports.

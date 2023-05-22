@@ -25,7 +25,6 @@
 
 		<!-- Dependency Versions -->
 		<version.jasperreports>6.20.5</version.jasperreports>
-		<version.openpdf>1.3.30.jaspersoft.2</version.openpdf> <!-- Needs to match version used in jasper -->
 
 		<version.slf4j>1.7.36</version.slf4j>
 		<version.plexus-compiler-api>2.13.0</version.plexus-compiler-api>
@@ -130,12 +129,6 @@
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports-functions</artifactId>
 			<version>${version.jasperreports}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.github.librepdf</groupId>
-			<artifactId>openpdf</artifactId>
-			<version>${version.openpdf}</version>
 		</dependency>
 
 		<dependency>
