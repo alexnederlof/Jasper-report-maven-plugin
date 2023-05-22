@@ -24,7 +24,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<!-- Dependency Versions -->
-		<version.jasperreports>6.20.3</version.jasperreports>
+		<version.jasperreports>6.20.4</version.jasperreports>
 		<version.openpdf>1.3.30.jaspersoft.2</version.openpdf> <!-- Needs to match version used in jasper -->
 
 		<version.slf4j>1.7.36</version.slf4j>
